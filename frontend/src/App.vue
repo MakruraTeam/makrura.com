@@ -1,6 +1,11 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import Navbar from './components/MainNavbar/MainNavbar.vue';
+</script>
 <template>
-  <router-view />
+  <v-app>
+    <Navbar location="left" />
+    <v-main>
+      <router-view />
+    </v-main>
+  </v-app>
 </template>
-
-<style></style>

@@ -1,11 +1,29 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
-import HomePage from '../pages/HomePage.vue';
+import DrUniversity from '@/layouts/DrUniversity.vue';
+import DrUniversityHome from '@/pages/DrUniversity/DrUniversityHome.vue';
+import PageInDevelopment from '@/pages/DrUniversity/PageInDevelopment.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
-    name: 'home',
-    component: HomePage,
+    redirect: '/dr-university',
+  },
+  {
+    path: '/dr-university',
+    name: 'dr-university',
+    component: DrUniversity,
+    children: [
+      {
+        path: '',
+        name: 'dr-university-home',
+        component: PageInDevelopment,
+      },
+    ],
+  },
+  {
+    path: '/login',
+    name: 'login',
+    component: PageInDevelopment,
   },
 ];
 
