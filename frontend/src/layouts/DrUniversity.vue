@@ -1,4 +1,13 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import TopNavbar from '@/components/DrUniversity/TopNavbar/TopNavbar.vue';
+</script>
+
 <template>
-  <router-view />
+  <v-app>
+    <TopNavbar />
+
+    <v-main>
+      <router-view />
+    </v-main>
+  </v-app>
 </template>
