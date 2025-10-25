@@ -16,7 +16,26 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: '',
         name: 'dr-university-home',
-        component: DrUniversityHome,
+        component: PageInDevelopment,
+      },
+      {
+        path: 'table',
+        name: 'dr-university-table',
+        component: PageInDevelopment,
+      },
+      {
+        path: 'leaders',
+        name: 'dr-university-leaders',
+        component: PageInDevelopment,
+      },
+      {
+        path: 'players',
+        name: 'dr-university-players',
+        component: PageInDevelopment,
+      },
+      {
+        path: ':pathMatch(.*)*',
+        redirect: '/dru', // or a custom 404 page
       },
     ],
   },
@@ -25,16 +44,12 @@ const routes: Array<RouteRecordRaw> = [
     name: 'login',
     component: PageInDevelopment,
   },
-  {
-    path: '/dru/:pathMatch(.*)*',
-    name: 'dr-university-development',
-    component: PageInDevelopment,
-  },
+
   {
     path: '/:pathMatch(.*)*',
     name: 'not-found',
     component: PageInDevelopment,
-  }
+  },
 ];
 
 const router = createRouter({

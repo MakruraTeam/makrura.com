@@ -3,7 +3,7 @@ import Navbar from './components/MainNavbar/MainNavbar.vue';
 </script>
 <template>
   <v-app>
-    <Navbar location="left" />
+    <Navbar />
     <v-main>
       <router-view />
     </v-main>
