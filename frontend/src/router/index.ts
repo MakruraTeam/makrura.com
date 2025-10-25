@@ -6,17 +6,17 @@ import PageInDevelopment from '@/pages/DrUniversity/PageInDevelopment.vue';
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
-    redirect: '/dr-university',
+    redirect: '/dru',
   },
   {
-    path: '/dr-university',
+    path: '/dru',
     name: 'dr-university',
     component: DrUniversity,
     children: [
       {
         path: '',
         name: 'dr-university-home',
-        component: PageInDevelopment,
+        component: DrUniversityHome,
       },
     ],
   },
@@ -25,6 +25,16 @@ const routes: Array<RouteRecordRaw> = [
     name: 'login',
     component: PageInDevelopment,
   },
+  {
+    path: '/dru/:pathMatch(.*)*',
+    name: 'dr-university-development',
+    component: PageInDevelopment,
+  },
+  {
+    path: '/:pathMatch(.*)*',
+    name: 'not-found',
+    component: PageInDevelopment,
+  }
 ];
 
 const router = createRouter({

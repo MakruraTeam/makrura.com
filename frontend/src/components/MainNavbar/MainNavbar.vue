@@ -12,7 +12,7 @@ const isExpanded = ref(false);
 const navLinks: Ref<MainDrawerNavigationLink[]> = computed(() => [
   {
     title: 'DR University',
-    to: '/dr-university',
+    to: '/dru',
     customIcon: SaulDrCircle,
     alt: 'DR University Logo',
     location: 'top',
