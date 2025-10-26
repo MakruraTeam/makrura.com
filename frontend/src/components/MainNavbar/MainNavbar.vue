@@ -56,7 +56,7 @@ const bottomLinks = computed(() => navLinks.value.filter((link) => link.location
     :expand-on-hover="!isMobile"
     :rail="!isMobile"
     :rail-width="72"
-    :width="isMobile ? width : undefined"
+    :width="isMobile ? width + 1 : undefined"
     @mouseenter="!isMobile && (isExpanded = true)"
     @mouseleave="!isMobile && (isExpanded = false)"
   >
