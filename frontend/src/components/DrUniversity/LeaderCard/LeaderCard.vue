@@ -7,12 +7,14 @@ import tiktokIcon from '@/assets/tiktok.png';
 import soopIcon from '@/assets/soop.png';
 import twitchIcon from '@/assets/twitch.png';
 import instagramIcon from '@/assets/instagram.webp';
+import twitterIcon from '@/assets/twitter.png';
+import redditIcon from '@/assets/reddit.png';
 
 const props = defineProps<LeaderCardProps>();
 </script>
 
 <template>
-  <v-card elevation="0" :width="300" variant="text" class="pa-6 d-flex flex-column align-center text-center">
+  <v-card elevation="0" :width="350" variant="text" class="pa-6 d-flex flex-column align-center text-center">
     <v-avatar size="140">
       <v-img :src="props.image" :alt="props.name" cover />
     </v-avatar>
@@ -40,6 +42,14 @@ const props = defineProps<LeaderCardProps>();
 
       <a v-if="props.instagram" :href="props.instagram" target="_blank">
         <v-img :src="instagramIcon" class="social-icon-img" />
+      </a>
+
+      <a v-if="props.twitter" :href="props.twitter" target="_blank">
+        <v-img :src="twitterIcon" class="social-icon-img" />
+      </a>
+
+      <a v-if="props.reddit" :href="props.reddit" target="_blank">
+        <v-img :src="redditIcon" class="social-icon-img" />
       </a>
     </div>
 

@@ -8,4 +8,6 @@ export interface LeaderCardProps {
   soop?: string;
   twitch?: string;
   instagram?: string;
+  twitter?: string;
+  reddit?: string;
 }

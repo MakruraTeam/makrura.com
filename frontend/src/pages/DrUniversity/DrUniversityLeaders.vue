@@ -25,6 +25,8 @@ import LeaderCard from '@/components/DrUniversity/LeaderCard/LeaderCard.vue';
       soop="https://koreanscoop.com"
       twitch="https://twitch.tv"
       instagram="https://instagram.com"
+      twitter="https://twitter.com"
+      reddit="https://reddit.com"
     />
   </div>
 </template>
