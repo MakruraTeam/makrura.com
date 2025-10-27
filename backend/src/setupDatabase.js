@@ -68,7 +68,7 @@ async function createLeaderSocialLinksTable() {
 
 async function seedSocialPlatforms() {
   const platforms = ['tiktok', 'youtube', 'liquipedia', 'soop', 'twitch', 'instagram', 'twitter', 'reddit', 'w3champions'];
-  for (const name of platforms) {
-    await pool.query(`INSERT IGNORE INTO social_platforms (name) VALUES (?);`, [name]);
-  }
+  const values = platforms.map(() => '(?)').join(', ');
+  const sql = `INSERT IGNORE INTO social_platforms (name) VALUES ${values};`;
+  await pool.query(sql, platforms);
 }

@@ -12,8 +12,9 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+await connectToDatabase();
+await setupDatabase();
+
 app.listen(process.env.PORT || 3000, async () => {
-  await connectToDatabase();
-  await setupDatabase();
   console.log(`Server running on port ${process.env.PORT || 3000}`);
 });
