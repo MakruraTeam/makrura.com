@@ -11,7 +11,7 @@ export async function setupDatabase() {
 
 async function createUserTable() {
   await pool.query(`
-    CREATE TABLE IF NOT EXISTS users (
+    CREATE TABLE IF NOT EXISTS tbl_users (
       id INT AUTO_INCREMENT,
       login VARCHAR(100) NOT NULL UNIQUE,
       hashedPassword VARCHAR(255) NOT NULL,
@@ -26,7 +26,7 @@ async function createUserTable() {
 
 async function createSocialPlatformsTable() {
   await pool.query(`
-    CREATE TABLE IF NOT EXISTS social_platforms (
+    CREATE TABLE IF NOT EXISTS tbl_social_platforms (
       id INT AUTO_INCREMENT,
       name VARCHAR(100) NOT NULL UNIQUE,
       createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -37,7 +37,7 @@ async function createSocialPlatformsTable() {
 
 async function createLeadersTable() {
   await pool.query(`
-    CREATE TABLE IF NOT EXISTS leaders (
+    CREATE TABLE IF NOT EXISTS tbl_leaders (
       id INT AUTO_INCREMENT,
       name VARCHAR(120) NOT NULL,
       role VARCHAR(255) NOT NULL,
@@ -52,7 +52,7 @@ async function createLeadersTable() {
 
 async function createLeaderSocialLinksTable() {
   await pool.query(`
-    CREATE TABLE IF NOT EXISTS leader_social_links (
+    CREATE TABLE IF NOT EXISTS tbl_leader_social_links (
       id INT AUTO_INCREMENT,
       leaderId INT NOT NULL,
       platformId INT NOT NULL,
@@ -60,8 +60,8 @@ async function createLeaderSocialLinksTable() {
       createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       CONSTRAINT PK_leader_social_links PRIMARY KEY (id),
       CONSTRAINT UQ_leader_platform UNIQUE (leaderId, platformId),
-      CONSTRAINT FK_leader FOREIGN KEY (leaderId) REFERENCES leaders(id) ON DELETE CASCADE,
-      CONSTRAINT FK_platform FOREIGN KEY (platformId) REFERENCES social_platforms(id) ON DELETE CASCADE
+      CONSTRAINT FK_leader_social_links_leader FOREIGN KEY (leaderId) REFERENCES tbl_leaders(id) ON DELETE CASCADE,
+      CONSTRAINT FK_leader_social_links_platform FOREIGN KEY (platformId) REFERENCES tbl_social_platforms(id) ON DELETE CASCADE
     );
   `);
 }
@@ -69,6 +69,6 @@ async function createLeaderSocialLinksTable() {
 async function seedSocialPlatforms() {
   const platforms = ['tiktok', 'youtube', 'liquipedia', 'soop', 'twitch', 'instagram', 'twitter', 'reddit', 'w3champions'];
   const values = platforms.map(() => '(?)').join(', ');
-  const sql = `INSERT IGNORE INTO social_platforms (name) VALUES ${values};`;
+  const sql = `INSERT IGNORE INTO tbl_social_platforms (name) VALUES ${values};`;
   await pool.query(sql, platforms);
 }
