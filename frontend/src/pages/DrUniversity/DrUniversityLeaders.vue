@@ -10,24 +10,19 @@ import LeaderCard from '@/components/DrUniversity/LeaderCard/LeaderCard.vue';
       :image="InfiImage"
       name="Infi"
       role="Director of University"
-      tiktok="https://tiktok.com"
-      youtube="https://youtube.com"
+      tiktok="https://live.douyin.com/864599529401"
       liquipedia="https://liquipedia.net/warcraft/Infi"
-      twitch="https://twitch.tv"
     />
     <LeaderCard
       :image="SaulApeManImage"
       name="SaulApeMan"
       role="Head of Curriculum"
-      tiktok="https://tiktok.com"
-      youtube="https://youtube.com"
+      tiktok="https://www.tiktok.com/@saulapeman"
+      youtube="https://www.youtube.com/@SaulApeMan"
       liquipedia="https://liquipedia.net/warcraft/SaulApeMan"
-      soop="https://koreanscoop.com"
-      twitch="https://twitch.tv"
-      instagram="https://instagram.com"
-      twitter="https://twitter.com"
-      reddit="https://reddit.com"
-      w3champions="https://w3champions.com"
+      twitch="https://twitch.tv/saulapeman"
+      instagram="https://instagram.com/saulapeman"
+      w3champions="https://www.w3champions.com/player/SaulGoodman%2321507"
     />
   </div>
 </template>
