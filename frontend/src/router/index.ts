@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
 import DrUniversity from '@/layouts/DrUniversity.vue';
-import DrUniversityHome from '@/pages/DrUniversity/DrUniversityHome.vue';
 import PageInDevelopment from '@/pages/DrUniversity/PageInDevelopment.vue';
+import DrUniversityLeaders from '@/pages/DrUniversity/DrUniversityLeaders.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -26,7 +26,7 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: 'leaders',
         name: 'dr-university-leaders',
-        component: PageInDevelopment,
+        component: DrUniversityLeaders,
       },
       {
         path: 'players',
@@ -35,7 +35,7 @@ const routes: Array<RouteRecordRaw> = [
       },
       {
         path: ':pathMatch(.*)*',
-        redirect: '/dru', // or a custom 404 page
+        redirect: '/dru',
       },
     ],
   },
