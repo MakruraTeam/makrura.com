@@ -27,6 +27,7 @@ import LeaderCard from '@/components/DrUniversity/LeaderCard/LeaderCard.vue';
       instagram="https://instagram.com"
       twitter="https://twitter.com"
       reddit="https://reddit.com"
+      w3champions="https://w3champions.com"
     />
   </div>
 </template>

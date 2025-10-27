@@ -9,6 +9,7 @@ import twitchIcon from '@/assets/twitch.png';
 import instagramIcon from '@/assets/instagram.webp';
 import twitterIcon from '@/assets/twitter.png';
 import redditIcon from '@/assets/reddit.png';
+import w3championsIcon from '@/assets/w3c.png';
 
 const props = defineProps<LeaderCardProps>();
 </script>
@@ -50,6 +51,10 @@ const props = defineProps<LeaderCardProps>();
 
       <a v-if="props.reddit" :href="props.reddit" target="_blank">
         <v-img :src="redditIcon" class="social-icon-img" />
+      </a>
+
+      <a v-if="props.w3champions" :href="props.w3champions" target="_blank">
+        <v-img :src="w3championsIcon" class="social-icon-img" />
       </a>
     </div>
 

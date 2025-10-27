@@ -10,4 +10,5 @@ export interface LeaderCardProps {
   instagram?: string;
   twitter?: string;
   reddit?: string;
+  w3champions?: string;
 }
