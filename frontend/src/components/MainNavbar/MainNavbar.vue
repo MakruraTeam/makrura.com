@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import SaulDrCircle from '@/assets/saul-dr-circle.png';
 import MakruraLogo from '@/assets/makrura.png';
+import GamesLogo from '@/assets/games.png';
 import { MainDrawerNavigationLink } from './MainNavbar.model';
 import { computed, Ref, ref, watch } from 'vue';
 import { useThemeSwitcher } from '@/composables/useThemeSwitcher';
@@ -25,6 +26,13 @@ const navLinks: Ref<MainDrawerNavigationLink[]> = computed(() => [
     to: '/dru',
     customIcon: SaulDrCircle,
     alt: 'DR University Logo',
+    location: 'top',
+  },
+  {
+    title: 'Games',
+    to: '/games',
+    customIcon: GamesLogo,
+    alt: 'Games Logo',
     location: 'top',
   },
   {
@@ -70,7 +78,7 @@ const bottomLinks = computed(() => navLinks.value.filter((link) => link.location
     </template>
 
     <v-list class="mt-10">
-      <v-list-item v-for="link in topLinks" :key="link.title" :to="link.to" active-class="active-link" @click="isMobile && (drawer = false)">
+      <v-list-item class="mb-3" v-for="link in topLinks" :key="link.title" :to="link.to" active-class="active-link" @click="isMobile && (drawer = false)">
         <template #prepend>
           <v-img v-if="link.customIcon" :src="link.customIcon" :alt="link.alt" width="40" height="40" />
           <v-icon v-else :size="40">{{ link.icon }}</v-icon>
