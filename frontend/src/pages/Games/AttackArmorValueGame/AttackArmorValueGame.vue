@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { nextTick, ref, watch } from 'vue';
 
 // --- Armor Images ---
 import HeavyArmorImage from '@/assets/damageValueGame/armors/heavy-armor.png';
@@ -19,6 +19,7 @@ import siegeAttackImage from '@/assets/damageValueGame/damage/siege-attack.png';
 import fireboltAttackImage from '@/assets/damageValueGame/damage/firebolt-attack.png';
 import { Armor, ArmorType, Attack, AttackType, DamageGame } from '@/pages/Games/AttackArmorValueGame/AttackArmorValueGame.model';
 
+import ConfettiExplosion from 'vue-confetti-explosion';
 const game = new DamageGame();
 
 const armors = ref([
@@ -26,8 +27,8 @@ const armors = ref([
   new Armor('Medium', MediumArmorImage),
   new Armor('Light', LightArmorImage),
   new Armor('Unarmored', UnarmoredImage),
-  new Armor('Hero', HeroArmorImage),
   new Armor('Fortified', FortifiedArmorImage),
+  new Armor('Hero', HeroArmorImage),
 ]);
 
 const attacks = ref([
@@ -43,6 +44,20 @@ const attacks = ref([
 const userInputs = ref<Record<string, Record<string, string>>>({});
 const results = ref<Record<string, Record<string, boolean | null>>>({});
 const focusedRow = ref<string | null>(null);
+const showConfetti = ref(false);
+
+watch(
+  results,
+  (newResults) => {
+    const allFilled = Object.values(newResults).every((attackRow) => Object.values(attackRow).every((val) => val === true));
+
+    if (allFilled) {
+      explode();
+    }
+  },
+  { deep: true }
+);
+
 initializeTables();
 
 function initializeTables(): void {
@@ -135,6 +150,12 @@ function resetTable(): void {
     }
   }
 }
+
+async function explode(): Promise<void> {
+  showConfetti.value = false;
+  await nextTick();
+  showConfetti.value = true;
+}
 </script>
 
 <template>
@@ -185,6 +206,9 @@ function resetTable(): void {
       </v-table>
     </div>
   </v-container>
+  <div v-if="showConfetti" class="confetti-center">
+    <ConfettiExplosion :particleCount="300" :particleSize="12" :duration="15000" />
+  </div>
 </template>
 
 <style scoped>
@@ -281,5 +305,14 @@ td {
 
 .buttons-wrapper {
   gap: 16px;
+}
+
+.confetti-center {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
+  pointer-events: none;
 }
 </style>
