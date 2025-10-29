@@ -17,47 +17,8 @@ import chaosAttackImage from '@/assets/damageValueGame/damage/chaos-attack.png';
 import heroAttackImage from '@/assets/damageValueGame/damage/hero-attack.png';
 import siegeAttackImage from '@/assets/damageValueGame/damage/siege-attack.png';
 import fireboltAttackImage from '@/assets/damageValueGame/damage/firebolt-attack.png';
+import { Armor, ArmorType, Attack, AttackType, DamageGame } from '@/pages/Games/AttackArmorValueGame/AttackArmorValueGame.model';
 
-// --- OOP Classes ---
-class Armor {
-  name: string;
-  image: string;
-  constructor(name: string, image: string) {
-    this.name = name;
-    this.image = image;
-  }
-}
-
-class Attack {
-  name: string;
-  image: string;
-  constructor(name: string, image: string) {
-    this.name = name;
-    this.image = image;
-  }
-}
-
-class DamageGame {
-  damageTable: Record<string, Record<string, number>> = {};
-
-  constructor() {
-    this.damageTable = {
-      Normal: { Heavy: 100, Medium: 150, Light: 100, Unarmored: 100, Hero: 100, Fortified: 70 },
-      Piercing: { Heavy: 90, Medium: 75, Light: 200, Unarmored: 150, Hero: 50, Fortified: 35 },
-      Magic: { Heavy: 200, Medium: 75, Light: 125, Unarmored: 100, Hero: 50, Fortified: 35 },
-      Siege: { Heavy: 100, Medium: 50, Light: 100, Unarmored: 150, Hero: 50, Fortified: 150 },
-      Hero: { Heavy: 100, Medium: 100, Light: 100, Unarmored: 100, Hero: 100, Fortified: 50 },
-      Chaos: { Heavy: 100, Medium: 100, Light: 100, Unarmored: 100, Hero: 100, Fortified: 100 },
-      Firebolt: { Heavy: 100, Medium: 100, Light: 100, Unarmored: 100, Hero: 70, Fortified: 100 },
-    };
-  }
-
-  getDamageValue(attack: string, armor: string): number {
-    return this.damageTable[attack][armor];
-  }
-}
-
-// --- Setup ---
 const game = new DamageGame();
 
 const armors = ref([
@@ -79,18 +40,19 @@ const attacks = ref([
   new Attack('Firebolt', fireboltAttackImage),
 ]);
 
-// --- State ---
 const userInputs = ref<Record<string, Record<string, string>>>({});
 const results = ref<Record<string, Record<string, boolean | null>>>({});
 const focusedRow = ref<string | null>(null);
+initializeTables();
 
-// Initialize
-for (const atk of attacks.value) {
-  userInputs.value[atk.name] = {};
-  results.value[atk.name] = {};
-  for (const arm of armors.value) {
-    userInputs.value[atk.name][arm.name] = '';
-    results.value[atk.name][arm.name] = null;
+function initializeTables(): void {
+  for (const atk of attacks.value) {
+    userInputs.value[atk.name] = {};
+    results.value[atk.name] = {};
+    for (const arm of armors.value) {
+      userInputs.value[atk.name][arm.name] = '';
+      results.value[atk.name][arm.name] = null;
+    }
   }
 }
 
@@ -98,12 +60,12 @@ function shuffle<T>(array: T[]): T[] {
   return array.sort(() => Math.random() - 0.5);
 }
 
-function shuffleTable() {
+function shuffleTable(): void {
   armors.value = shuffle([...armors.value]);
   attacks.value = shuffle([...attacks.value]);
 }
 
-function checkValue(attack: string, armor: string) {
+function checkValue(attack: AttackType, armor: ArmorType): void {
   const correctValue = game.getDamageValue(attack, armor);
   const userValue = parseFloat(userInputs.value[attack][armor].replace('%', ''));
   if (isNaN(userValue)) {
@@ -113,20 +75,20 @@ function checkValue(attack: string, armor: string) {
   results.value[attack][armor] = userValue === correctValue;
 }
 
-function getCellColor(attack: string, armor: string): string {
+function getCellColor(attack: AttackType, armor: ArmorType): string {
   const result = results.value[attack][armor];
   if (result === null) return 'white';
   return result ? '#c8e6c9' : '#ffcdd2';
 }
 
-function handleFocus(attack: string) {
+function handleFocus(attack: AttackType): void {
   focusedRow.value = attack;
 }
-function handleBlur() {
+function handleBlur(): void {
   focusedRow.value = null;
 }
 
-function handleKeyNavigation(event: KeyboardEvent, attack: string, armor: string) {
+function handleKeyNavigation(event: KeyboardEvent, attack: AttackType, armor: ArmorType): void {
   const attackIndex = attacks.value.findIndex((a) => a.name === attack);
   const armorIndex = armors.value.findIndex((a) => a.name === armor);
 
@@ -155,19 +117,32 @@ function handleKeyNavigation(event: KeyboardEvent, attack: string, armor: string
   if (nextAttackIndex !== attackIndex || nextArmorIndex !== armorIndex) {
     event.preventDefault();
 
-    requestAnimationFrame(() => {
-      const wrapper = document.querySelector<HTMLElement>(`.cell-wrapper[data-attack="${attacks.value[nextAttackIndex].name}"][data-armor="${armors.value[nextArmorIndex].name}"]`);
+    requestAnimationFrame((): void => {
+      const wrapper = document.querySelector<HTMLElement>(
+        `.cell-wrapper[data-attack="${attacks.value[nextAttackIndex].name}"][data-armor="${armors.value[nextArmorIndex].name}"]`
+      );
       const nextInput = wrapper?.querySelector('input');
       nextInput?.focus();
     });
+  }
+}
+
+function resetTable(): void {
+  for (const atk of attacks.value) {
+    for (const arm of armors.value) {
+      userInputs.value[atk.name][arm.name] = '';
+      results.value[atk.name][arm.name] = null;
+    }
   }
 }
 </script>
 
 <template>
   <v-container class="py-6 d-flex flex-column align-center">
-    <v-btn color="primary" class="mb-4" @click="shuffleTable">🔀 Shuffle Rows & Columns</v-btn>
-
+    <div class="buttons-wrapper d-flex mb-4 flex-md-row flex-column">
+      <v-btn color="primary" @click="shuffleTable">Shuffle Rows & Columns</v-btn>
+      <v-btn color="error" @click="resetTable">Reset All Fields</v-btn>
+    </div>
     <div class="damage-table-wrapper">
       <v-table class="damage-table">
         <thead>
@@ -302,5 +277,9 @@ td {
 /* remove label spacing */
 :deep(.v-label) {
   display: none !important;
+}
+
+.buttons-wrapper {
+  gap: 16px;
 }
 </style>

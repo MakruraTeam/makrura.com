@@ -2,7 +2,7 @@ import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
 import DrUniversity from '@/layouts/DrUniversity.vue';
 import PageInDevelopment from '@/pages/DrUniversity/PageInDevelopment.vue';
 import DrUniversityLeaders from '@/pages/DrUniversity/DrUniversityLeaders.vue';
-import DamageValueGame from '@/pages/Games/DamageValueGame.vue';
+import AttackArmorValueGame from '@/pages/Games/AttackArmorValueGame/AttackArmorValueGame.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -43,7 +43,7 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/games',
     name: 'games',
-    component: DamageValueGame,
+    component: AttackArmorValueGame,
   },
   {
     path: '/login',
