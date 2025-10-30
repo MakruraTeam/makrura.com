@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import SaulDr from '@/assets/saul-dr.png';
+import SaulDr from '@/assets/imgs/saul-dr.png';
 </script>
 
 <template>
