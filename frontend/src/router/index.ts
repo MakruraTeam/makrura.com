@@ -3,6 +3,7 @@ import DrUniversity from '@/layouts/DrUniversity.vue';
 import PageInDevelopment from '@/pages/DrUniversity/PageInDevelopment.vue';
 import DrUniversityLeaders from '@/pages/DrUniversity/DrUniversityLeaders.vue';
 import AttackArmorValueGame from '@/pages/Games/AttackArmorValueGame/AttackArmorValueGame.vue';
+import GamesLayout from '@/layouts/GamesLayout.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -43,7 +44,18 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/games',
     name: 'games',
-    component: AttackArmorValueGame,
+    component: GamesLayout,
+    children: [
+      {
+        path: '',
+        redirect: '/games/attack-armor-value',
+      },
+      {
+        path: 'attack-armor-value',
+        name: 'attack-armor-value-game',
+        component: AttackArmorValueGame,
+      },
+    ],
   },
   {
     path: '/login',

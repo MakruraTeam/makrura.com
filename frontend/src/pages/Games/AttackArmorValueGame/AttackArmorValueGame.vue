@@ -190,7 +190,7 @@ async function explode(): Promise<void> {
           <tr>
             <th class="square-cell"></th>
             <th v-for="armor in armors" :key="armor.name" class="square-cell">
-              <v-img :src="armor.image" class="fill-cell" />
+              <v-img :src="armor.image" class="fill-cell" :alt="armor.name" />
             </th>
           </tr>
         </thead>
@@ -198,7 +198,7 @@ async function explode(): Promise<void> {
         <tbody>
           <tr v-for="attack in attacks" :key="attack.name" :class="{ 'highlighted-row': focusedRow === attack.name }">
             <td class="square-cell">
-              <v-img :src="attack.image" class="fill-cell" />
+              <v-img :src="attack.image" class="fill-cell" :alt="attack.name" />
             </td>
 
             <td v-for="armor in armors" :key="armor.name" class="square-cell">
