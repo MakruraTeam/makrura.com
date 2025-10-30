@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import SaulDrCircle from '@/assets/saul-dr-circle.png';
-import MakruraLogo from '@/assets/makrura.png';
-import GamesLogo from '@/assets/games.png';
+import SaulDrCircle from '@/assets/imgs/saul-dr-circle.png';
+import MakruraLogo from '@/assets/imgs/makrura.png';
+import GamesLogo from '@/assets/imgs/games.png';
 import { MainDrawerNavigationLink } from './MainNavbar.model';
 import { computed, Ref, ref, watch } from 'vue';
 import { useThemeSwitcher } from '@/composables/useThemeSwitcher';
