@@ -16,7 +16,7 @@ import magicAttackImage from '@/assets/imgs/damageValueGame/damage/magic-attack.
 import chaosAttackImage from '@/assets/imgs/damageValueGame/damage/chaos-attack.png';
 import heroAttackImage from '@/assets/imgs/damageValueGame/damage/hero-attack.png';
 import siegeAttackImage from '@/assets/imgs/damageValueGame/damage/siege-attack.png';
-import fireboltAttackImage from '@/assets/imgs/damageValueGame/damage/firebolt-attack.png';
+import spellAttackImage from '@/assets/imgs/damageValueGame/damage/spell-attack.png';
 import { Armor, ArmorType, Attack, AttackType, DamageGame } from '@/pages/Games/AttackArmorValueGame/AttackArmorValueGame.model';
 
 import ConfettiExplosion from 'vue-confetti-explosion';
@@ -38,7 +38,7 @@ const attacks = ref([
   new Attack('Siege', siegeAttackImage),
   new Attack('Hero', heroAttackImage),
   new Attack('Chaos', chaosAttackImage),
-  new Attack('Firebolt', fireboltAttackImage),
+  new Attack('Spell', spellAttackImage),
 ]);
 
 const userInputs = ref<Record<string, Record<string, string>>>({});

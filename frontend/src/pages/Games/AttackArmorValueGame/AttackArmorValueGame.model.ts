@@ -24,7 +24,7 @@ export class DamageGame {
     Siege: { Heavy: 100, Medium: 50, Light: 100, Unarmored: 150, Hero: 50, Fortified: 150 },
     Hero: { Heavy: 100, Medium: 100, Light: 100, Unarmored: 100, Hero: 100, Fortified: 50 },
     Chaos: { Heavy: 100, Medium: 100, Light: 100, Unarmored: 100, Hero: 100, Fortified: 100 },
-    Firebolt: { Heavy: 100, Medium: 100, Light: 100, Unarmored: 100, Hero: 70, Fortified: 100 },
+    Spell: { Heavy: 100, Medium: 100, Light: 100, Unarmored: 100, Hero: 70, Fortified: 100 },
   };
 
   getDamageValue(attack: AttackType, armor: ArmorType): number {
@@ -33,7 +33,7 @@ export class DamageGame {
 }
 
 export type ArmorType = 'Heavy' | 'Medium' | 'Light' | 'Unarmored' | 'Hero' | 'Fortified';
-export type AttackType = 'Normal' | 'Piercing' | 'Magic' | 'Siege' | 'Hero' | 'Chaos' | 'Firebolt';
+export type AttackType = 'Normal' | 'Piercing' | 'Magic' | 'Siege' | 'Hero' | 'Chaos' | 'Spell';
 
 export type DamageTable = {
   [attackType in AttackType]: { [armorType in ArmorType]: number };
