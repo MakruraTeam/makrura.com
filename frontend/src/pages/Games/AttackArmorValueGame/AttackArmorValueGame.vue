@@ -2,21 +2,21 @@
 import { nextTick, ref, watch } from 'vue';
 
 // --- Armor Images ---
-import HeavyArmorImage from '@/assets/damageValueGame/armors/heavy-armor.png';
-import MediumArmorImage from '@/assets/damageValueGame/armors/medium-armor.png';
-import LightArmorImage from '@/assets/damageValueGame/armors/light-armor.png';
-import UnarmoredImage from '@/assets/damageValueGame/armors/unarmored.png';
-import HeroArmorImage from '@/assets/damageValueGame/armors/hero-armor.png';
-import FortifiedArmorImage from '@/assets/damageValueGame/armors/fortified-armor.png';
+import HeavyArmorImage from '@/assets/imgs/damageValueGame/armors/heavy-armor.png';
+import MediumArmorImage from '@/assets/imgs/damageValueGame/armors/medium-armor.png';
+import LightArmorImage from '@/assets/imgs/damageValueGame/armors/light-armor.png';
+import UnarmoredImage from '@/assets/imgs/damageValueGame/armors/unarmored.png';
+import HeroArmorImage from '@/assets/imgs/damageValueGame/armors/hero-armor.png';
+import FortifiedArmorImage from '@/assets/imgs/damageValueGame/armors/fortified-armor.png';
 
 // --- Attack Images ---
-import normalAttackImage from '@/assets/damageValueGame/damage/normal-attack.png';
-import piercingAttackImage from '@/assets/damageValueGame/damage/piercing-attack.png';
-import magicAttackImage from '@/assets/damageValueGame/damage/magic-attack.png';
-import chaosAttackImage from '@/assets/damageValueGame/damage/chaos-attack.png';
-import heroAttackImage from '@/assets/damageValueGame/damage/hero-attack.png';
-import siegeAttackImage from '@/assets/damageValueGame/damage/siege-attack.png';
-import fireboltAttackImage from '@/assets/damageValueGame/damage/firebolt-attack.png';
+import normalAttackImage from '@/assets/imgs/damageValueGame/damage/normal-attack.png';
+import piercingAttackImage from '@/assets/imgs/damageValueGame/damage/piercing-attack.png';
+import magicAttackImage from '@/assets/imgs/damageValueGame/damage/magic-attack.png';
+import chaosAttackImage from '@/assets/imgs/damageValueGame/damage/chaos-attack.png';
+import heroAttackImage from '@/assets/imgs/damageValueGame/damage/hero-attack.png';
+import siegeAttackImage from '@/assets/imgs/damageValueGame/damage/siege-attack.png';
+import fireboltAttackImage from '@/assets/imgs/damageValueGame/damage/firebolt-attack.png';
 import { Armor, ArmorType, Attack, AttackType, DamageGame } from '@/pages/Games/AttackArmorValueGame/AttackArmorValueGame.model';
 
 import ConfettiExplosion from 'vue-confetti-explosion';
@@ -45,6 +45,8 @@ const userInputs = ref<Record<string, Record<string, string>>>({});
 const results = ref<Record<string, Record<string, boolean | null>>>({});
 const focusedRow = ref<string | null>(null);
 const showConfetti = ref(false);
+
+const hardcoreMode = ref(false);
 
 watch(
   results,
@@ -87,7 +89,14 @@ function checkValue(attack: AttackType, armor: ArmorType): void {
     results.value[attack][armor] = null;
     return;
   }
-  results.value[attack][armor] = userValue === correctValue;
+
+  const isCorrect = userValue === correctValue;
+  results.value[attack][armor] = isCorrect;
+
+  if (hardcoreMode.value && !isCorrect) {
+    resetTable();
+    shuffleTable();
+  }
 }
 
 function getCellColor(attack: AttackType, armor: ArmorType): string {
@@ -133,9 +142,7 @@ function handleKeyNavigation(event: KeyboardEvent, attack: AttackType, armor: Ar
     event.preventDefault();
 
     requestAnimationFrame((): void => {
-      const wrapper = document.querySelector<HTMLElement>(
-        `.cell-wrapper[data-attack="${attacks.value[nextAttackIndex].name}"][data-armor="${armors.value[nextArmorIndex].name}"]`
-      );
+      const wrapper = document.querySelector<HTMLElement>(`.cell-wrapper[data-attack="${attacks.value[nextAttackIndex].name}"][data-armor="${armors.value[nextArmorIndex].name}"]`);
       const nextInput = wrapper?.querySelector('input');
       nextInput?.focus();
     });
@@ -151,6 +158,13 @@ function resetTable(): void {
   }
 }
 
+watch(hardcoreMode, (enabled) => {
+  if (enabled) {
+    shuffleTable();
+    resetTable();
+  }
+});
+
 async function explode(): Promise<void> {
   showConfetti.value = false;
   await nextTick();
@@ -160,10 +174,16 @@ async function explode(): Promise<void> {
 
 <template>
   <v-container class="py-6 d-flex flex-column align-center">
-    <div class="buttons-wrapper d-flex mb-4 flex-md-row flex-column">
+    <div class="buttons-wrapper d-flex mb-4 flex-md-row flex-column align-center">
       <v-btn color="primary" @click="shuffleTable">Shuffle Rows & Columns</v-btn>
       <v-btn color="error" @click="resetTable">Reset All Fields</v-btn>
+
+      <div class="d-flex align-center no-wrap">
+        <v-checkbox v-model="hardcoreMode" color="red" hide-details density="compact" />
+        <span class="ml-2 hardcore-label">Hardcore Mode</span>
+      </div>
     </div>
+
     <div class="damage-table-wrapper">
       <v-table class="damage-table">
         <thead>
@@ -206,6 +226,7 @@ async function explode(): Promise<void> {
       </v-table>
     </div>
   </v-container>
+
   <div v-if="showConfetti" class="confetti-center">
     <ConfettiExplosion :particleCount="300" :particleSize="12" :duration="15000" />
   </div>
@@ -263,7 +284,6 @@ td {
   color: black;
 }
 
-/* --- Deep Vuetify Overrides --- */
 :deep(.v-input),
 :deep(.v-input__control),
 :deep(.v-field__field),
@@ -298,7 +318,6 @@ td {
   outline: none !important;
 }
 
-/* remove label spacing */
 :deep(.v-label) {
   display: none !important;
 }
@@ -314,5 +333,17 @@ td {
   transform: translate(-50%, -50%);
   z-index: 9999;
   pointer-events: none;
+}
+
+.no-wrap {
+  flex-wrap: nowrap !important;
+  white-space: nowrap;
+}
+
+.hardcore-label {
+  font-weight: 600;
+  font-size: 1.1rem;
+  user-select: none;
+  white-space: nowrap;
 }
 </style>
