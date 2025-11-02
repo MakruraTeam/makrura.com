@@ -1,7 +1,9 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
 import DrUniversity from '@/layouts/DrUniversity.vue';
 import PageInDevelopment from '@/pages/DrUniversity/PageInDevelopment.vue';
-import DrUniversityLeaders from '@/pages/DrUniversity/DrUniversityLeaders.vue';
+import DrUniversityFounders from '@/pages/DrUniversity/DrUniversityFounders.vue';
+import AttackArmorValueGame from '@/pages/Games/AttackArmorValueGame/AttackArmorValueGame.vue';
+import GamesLayout from '@/layouts/GamesLayout.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -24,9 +26,9 @@ const routes: Array<RouteRecordRaw> = [
         component: PageInDevelopment,
       },
       {
-        path: 'leaders',
-        name: 'dr-university-leaders',
-        component: DrUniversityLeaders,
+        path: 'founders',
+        name: 'dr-university-founders',
+        component: DrUniversityFounders,
       },
       {
         path: 'players',
@@ -36,6 +38,22 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: ':pathMatch(.*)*',
         redirect: '/dru',
+      },
+    ],
+  },
+  {
+    path: '/games',
+    name: 'games',
+    component: GamesLayout,
+    children: [
+      {
+        path: '',
+        redirect: '/games/attack-armor-value',
+      },
+      {
+        path: 'attack-armor-value',
+        name: 'attack-armor-value-game',
+        component: AttackArmorValueGame,
       },
     ],
   },
