@@ -4,6 +4,10 @@ import PageInDevelopment from '@/pages/DrUniversity/PageInDevelopment.vue';
 import DrUniversityFounders from '@/pages/DrUniversity/DrUniversityFounders.vue';
 import AttackArmorValueGame from '@/pages/Games/AttackArmorValueGame/AttackArmorValueGame.vue';
 import GamesLayout from '@/layouts/GamesLayout.vue';
+import CmsLogin from '@/pages/Cms/CmsLogin.vue';
+import CmsDashboard from '@/pages/Cms/CmsDashboard.vue';
+import { useAuthStore } from '@/stores/auth';
+import AddUser from '@/pages/Cms/users/AddUser.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -60,9 +64,50 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/login',
     name: 'login',
-    component: PageInDevelopment,
+    component: CmsLogin,
   },
-
+  {
+    path: '/cms',
+    name: 'cms',
+    meta: { requiresAuth: true },
+    children: [
+      {
+        path: '',
+        name: 'cms-dashboard',
+        component: CmsDashboard,
+      },
+      {
+        path: 'add-user',
+        name: 'cms-add-user',
+        component: AddUser,
+      },
+      {
+        path: 'manage-users',
+        name: 'cms-manage-users',
+        component: PageInDevelopment,
+      },
+      {
+        path: 'add-blog-post',
+        name: 'cms-add-blog-post',
+        component: PageInDevelopment,
+      },
+      {
+        path: 'manage-blog-posts',
+        name: 'cms-manage-blog-posts',
+        component: PageInDevelopment,
+      },
+      {
+        path: 'add-founders',
+        name: 'cms-add-founders',
+        component: PageInDevelopment,
+      },
+      {
+        path: 'manage-founders',
+        name: 'cms-manage-founders',
+        component: PageInDevelopment,
+      },
+    ],
+  },
   {
     path: '/:pathMatch(.*)*',
     name: 'not-found',
@@ -73,6 +118,18 @@ const routes: Array<RouteRecordRaw> = [
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
+});
+
+router.beforeEach((to) => {
+  const auth = useAuthStore();
+
+  if (to.meta.requiresAuth && !auth.isAuthenticated) {
+    return { name: 'login', query: { redirect: to.fullPath } };
+  }
+
+  if (to.name === 'login' && auth.isAuthenticated) {
+    return { name: 'cms' };
+  }
 });
 
 export default router;

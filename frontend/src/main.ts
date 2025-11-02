@@ -5,5 +5,17 @@ import vuetify from './plugins/vuetify';
 
 import '@fontsource/roboto';
 import '@mdi/font/css/materialdesignicons.css';
+import { createPinia } from 'pinia';
+import { useAuthStore } from './stores/auth';
 
-createApp(App).use(router).use(vuetify).mount('#app');
+const app = createApp(App);
+const pinia = createPinia();
+
+const auth = useAuthStore(pinia);
+auth.hydrateFromStorage();
+
+app.use(pinia);
+app.use(router);
+app.use(vuetify);
+
+app.mount('#app');

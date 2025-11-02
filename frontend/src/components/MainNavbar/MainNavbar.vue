@@ -4,17 +4,18 @@ import MakruraLogo from '@/assets/imgs/makrura.png';
 import GamesLogo from '@/assets/imgs/games.png';
 import { MainDrawerNavigationLink } from './MainNavbar.model';
 import { computed, Ref, ref, watch } from 'vue';
-import { useThemeSwitcher } from '@/composables/useThemeSwitcher';
 import { useDisplay } from 'vuetify';
+import { useAuthStore } from '@/stores/auth';
+import { useRouter } from 'vue-router';
 
-const { isDark, toggleTheme } = useThemeSwitcher();
+const authStore = useAuthStore();
+authStore.hydrateFromStorage();
+
 const { width } = useDisplay();
-
 const isExpanded = ref(false);
-
 const isMobile = computed(() => width.value < 1000);
-
 const drawer = ref(!isMobile.value);
+const router = useRouter();
 
 watch(isMobile, (mobile) => {
   drawer.value = !mobile;
@@ -36,21 +37,35 @@ const navLinks: Ref<MainDrawerNavigationLink[]> = computed(() => [
     location: 'top',
   },
   {
-    title: `${isDark.value ? 'Light' : 'Dark'} Theme`,
-    icon: 'mdi-theme-light-dark',
+    title: 'CMS Dashboard',
+    to: '/cms',
+    icon: 'mdi-view-dashboard',
     location: 'bottom',
-    customFunction: toggleTheme,
+    hide: !authStore.isAuthenticated,
   },
   {
     title: 'Login',
     to: '/login',
     icon: 'mdi-login',
     location: 'bottom',
+    hide: authStore.isAuthenticated,
+  },
+  {
+    title: 'Logout',
+    icon: 'mdi-logout',
+    location: 'bottom',
+    customFunction: () => logout(),
+    hide: !authStore.isAuthenticated,
   },
 ]);
 
-const topLinks = computed(() => navLinks.value.filter((link) => link.location === 'top'));
-const bottomLinks = computed(() => navLinks.value.filter((link) => link.location === 'bottom'));
+const logout = () => {
+  authStore.removeToken();
+  router.push('/login');
+};
+
+const topLinks = computed(() => navLinks.value.filter((link) => link.location === 'top' && !link?.hide));
+const bottomLinks = computed(() => navLinks.value.filter((link) => link.location === 'bottom' && !link?.hide));
 </script>
 
 <template>
@@ -69,16 +84,24 @@ const bottomLinks = computed(() => navLinks.value.filter((link) => link.location
     @mouseleave="!isMobile && (isExpanded = false)"
   >
     <template #prepend>
-      <div class="drawer-header">
+      <div class="drawer-header" :class="{ 'drawer-header-authenticated': authStore.isAuthenticated }">
         <v-img :src="MakruraLogo" alt="Makrura Logo" width="48" height="48" class="rounded-full" />
-        <span :class="{ hide: !isExpanded && !isMobile }" class="ml-3 mt-2 text-base font-medium whitespace-nowrap"> makrura.com </span>
+        <span :class="{ hide: !isExpanded && !isMobile }" class="mt-2 text-base font-medium whitespace-nowrap"> makrura.com </span>
+        <span v-if="authStore.isAuthenticated" :class="{ hide: !isExpanded && !isMobile }" class="text-sm text-gray-500 mt-1 whitespace-nowrap">
+          Hello {{ authStore.getLogin }}!
+        </span>
       </div>
-
-      <v-btn v-if="isMobile" icon="mdi-close" class="drawer-close-button" variant="text" @click="drawer = false" />
     </template>
 
     <v-list class="mt-10">
-      <v-list-item class="mb-3" v-for="link in topLinks" :key="link.title" :to="link.to" active-class="active-link" @click="isMobile && (drawer = false)">
+      <v-list-item
+        class="mb-3"
+        v-for="link in topLinks"
+        :key="link.title"
+        :to="link.to"
+        active-class="active-link"
+        @click="isMobile && (drawer = false)"
+      >
         <template #prepend>
           <v-img v-if="link.customIcon" :src="link.customIcon" :alt="link.alt" width="40" height="40" />
           <v-icon v-else :size="40">{{ link.icon }}</v-icon>
@@ -136,8 +159,20 @@ const bottomLinks = computed(() => navLinks.value.filter((link) => link.location
   align-items: center;
   padding-top: 16px;
   position: relative;
+  height: 100px;
+  overflow: hidden;
 }
 
+.drawer-header-authenticated {
+  height: 120px;
+}
+
+.drawer-header span {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  max-width: 100%;
+}
 .drawer-close-button {
   position: absolute;
   top: 10px;
