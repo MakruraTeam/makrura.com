@@ -120,5 +120,5 @@ async function createDefaultUser() {
     [login, email, hashed]
   );
 
-  console.log('Default admin user ensured.');
+  console.log('Default admin user created.');
 }

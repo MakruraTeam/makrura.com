@@ -8,7 +8,7 @@ export async function loginUser(req, res) {
 
     const [rows] = await pool.query(
       `
-      SELECT id, hashedPassword FROM tbl_users
+      SELECT id, hashedPassword FROM users
       WHERE login = ? AND deletedAt IS NULL
     `,
       [login]
@@ -25,6 +25,6 @@ export async function loginUser(req, res) {
 
     res.json({ message: 'Logged in', token });
   } catch (err) {
-    res.status(500).json({ error: 'Server error' });
+    res.status(500).json({ error: 'Server error', details: err });
   }
 }
