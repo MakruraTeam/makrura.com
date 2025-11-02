@@ -1,4 +1,4 @@
-export interface LeaderCardProps {
+export interface FoundersCardProps {
   image: string;
   name: string;
   role: string;

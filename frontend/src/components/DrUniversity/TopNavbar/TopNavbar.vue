@@ -22,7 +22,7 @@ onBeforeUnmount(() => {
 const navLinks = computed<NavLink[]>(() => [
   { label: 'Home', name: 'dr-university-home' },
   { label: 'Table', name: 'dr-university-table' },
-  { label: 'Leaders', name: 'dr-university-leaders' },
+  { label: 'Founders', name: 'dr-university-founders' },
   { label: 'Players', name: 'dr-university-players' },
 ]);
 </script>

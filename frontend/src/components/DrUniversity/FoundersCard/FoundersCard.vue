@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { LeaderCardProps } from './LeaderCard.model';
+import { FoundersCardProps } from './FoundersCard.model';
 
 import liquipediaIcon from '@/assets/imgs/liquipedia.png';
 import youtubeIcon from '@/assets/imgs/youtube.png';
@@ -11,7 +11,7 @@ import twitterIcon from '@/assets/imgs/twitter.png';
 import redditIcon from '@/assets/imgs/reddit.png';
 import w3championsIcon from '@/assets/imgs/w3c.png';
 
-const props = defineProps<LeaderCardProps>();
+const props = defineProps<FoundersCardProps>();
 </script>
 
 <template>
