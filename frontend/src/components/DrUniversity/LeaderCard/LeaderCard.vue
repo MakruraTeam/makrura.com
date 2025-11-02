@@ -1,15 +1,15 @@
 <script setup lang="ts">
 import { LeaderCardProps } from './LeaderCard.model';
 
-import liquipediaIcon from '@/assets/liquipedia.png';
-import youtubeIcon from '@/assets/youtube.png';
-import tiktokIcon from '@/assets/tiktok.png';
-import soopIcon from '@/assets/soop.png';
-import twitchIcon from '@/assets/twitch.png';
-import instagramIcon from '@/assets/instagram.webp';
-import twitterIcon from '@/assets/twitter.png';
-import redditIcon from '@/assets/reddit.png';
-import w3championsIcon from '@/assets/w3c.png';
+import liquipediaIcon from '@/assets/imgs/liquipedia.png';
+import youtubeIcon from '@/assets/imgs/youtube.png';
+import tiktokIcon from '@/assets/imgs/tiktok.png';
+import soopIcon from '@/assets/imgs/soop.png';
+import twitchIcon from '@/assets/imgs/twitch.png';
+import instagramIcon from '@/assets/imgs/instagram.webp';
+import twitterIcon from '@/assets/imgs/twitter.png';
+import redditIcon from '@/assets/imgs/reddit.png';
+import w3championsIcon from '@/assets/imgs/w3c.png';
 
 const props = defineProps<LeaderCardProps>();
 </script>

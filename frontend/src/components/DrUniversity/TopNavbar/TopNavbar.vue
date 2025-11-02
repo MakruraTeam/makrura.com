@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount, computed } from 'vue';
-import DarkRangerBanner from '@/assets/dark-ranger-banner.webp';
-import DarkRanger from '@/assets/dark-ranger.webp';
+import DarkRangerBanner from '@/assets/imgs/dark-ranger-banner.webp';
+import DarkRanger from '@/assets/imgs/dark-ranger.webp';
 import { NavLink } from './TopNavbar.model';
 
 const isMobile = ref(false);
