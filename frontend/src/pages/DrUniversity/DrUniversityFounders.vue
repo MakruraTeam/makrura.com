@@ -1,19 +1,19 @@
 <script setup lang="ts">
 import InfiImage from '@/assets/imgs/infi.png';
 import SaulApeManImage from '@/assets/imgs/saul-dr-circle.png';
-import FoundersCard from '@/components/DrUniversity/FoundersCard/FoundersCard.vue';
+import FounderCard from '@/components/DrUniversity/FounderCard/FounderCard.vue';
 </script>
 
 <template>
   <div class="leaders-page d-flex justify-center align-center py-10 flex-wrap">
-    <FoundersCard
+    <FounderCard
       :image="InfiImage"
       name="Infi"
       role="Director of University"
       tiktok="https://live.douyin.com/864599529401"
       liquipedia="https://liquipedia.net/warcraft/Infi"
     />
-    <FoundersCard
+    <FounderCard
       :image="SaulApeManImage"
       name="SaulApeMan"
       role="Head of Curriculum"
