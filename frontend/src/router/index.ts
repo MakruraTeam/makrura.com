@@ -7,7 +7,8 @@ import GamesLayout from '@/layouts/GamesLayout.vue';
 import CmsLogin from '@/pages/Cms/CmsLogin.vue';
 import CmsDashboard from '@/pages/Cms/CmsDashboard.vue';
 import { useAuthStore } from '@/stores/auth';
-import AddUser from '@/pages/Cms/users/AddUser.vue';
+import AddUser from '@/pages/Cms/Users/AddUser.vue';
+import AddFounder from '@/pages/Cms/DrUniversity/AddFounder.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -99,7 +100,7 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: 'add-founders',
         name: 'cms-add-founders',
-        component: PageInDevelopment,
+        component: AddFounder,
       },
       {
         path: 'manage-founders',

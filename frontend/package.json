@@ -12,8 +12,11 @@
     "@mdi/font": "^7.4.47",
     "@mdi/js": "^7.4.47",
     "core-js": "^3.8.3",
+    "dompurify": "^3.3.0",
     "pinia": "^3.0.3",
+    "quill": "^2.0.3",
     "vue": "^3.2.13",
+    "vue-advanced-cropper": "^2.8.9",
     "vue-confetti-explosion": "^1.0.2",
     "vue-router": "^4.0.3",
     "vuetify": "^3.10.7"

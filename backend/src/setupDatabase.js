@@ -5,8 +5,11 @@ export async function setupDatabase() {
   await createUserTable();
   await createSocialPlatformsTable();
   await createFoundersTable();
+  await createWarcraft3RacesTable();
+  await createFounderWarcraft3RacesTable();
   await createFounderSocialLinksTable();
 
+  await seedWarcraft3Races();
   await seedSocialPlatforms();
   await createDefaultUser();
 }
@@ -55,6 +58,7 @@ async function createFoundersTable() {
       name VARCHAR(120) NOT NULL,
       role VARCHAR(255) NOT NULL,
       image VARCHAR(255) NOT NULL,
+      contribution TEXT NOT NULL,
       
       createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       createdBy INT NOT NULL,
@@ -67,6 +71,43 @@ async function createFoundersTable() {
       CONSTRAINT FK_founders_createdBy FOREIGN KEY (createdBy) REFERENCES users(id),
       CONSTRAINT FK_founders_updatedBy FOREIGN KEY (updatedBy) REFERENCES users(id),
       CONSTRAINT FK_founders_deletedBy FOREIGN KEY (deletedBy) REFERENCES users(id)
+    );
+  `);
+}
+
+async function createWarcraft3RacesTable() {
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS wc3_races (
+      id INT AUTO_INCREMENT,
+      name VARCHAR(100) NOT NULL UNIQUE,
+      
+      createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+      CONSTRAINT PK_wc3_races PRIMARY KEY (id)
+    );
+  `);
+}
+
+async function createFounderWarcraft3RacesTable() {
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS founder_wc3_races (
+      id INT AUTO_INCREMENT,
+      founderId INT NOT NULL,
+      raceId INT NOT NULL,
+
+      createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      createdBy INT NOT NULL,
+      updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+      updatedBy INT NULL,
+      deletedAt TIMESTAMP NULL,
+      deletedBy INT NULL,
+
+      CONSTRAINT PK_founder_wc3_races PRIMARY KEY (id),
+      CONSTRAINT FK_founder_wc3_races_founder FOREIGN KEY (founderId) REFERENCES founders(id) ON DELETE CASCADE,
+      CONSTRAINT FK_founder_wc3_races_race FOREIGN KEY (raceId) REFERENCES wc3_races(id) ON DELETE CASCADE,
+      CONSTRAINT FK_founder_wc3_races_createdBy FOREIGN KEY (createdBy) REFERENCES users(id),
+      CONSTRAINT FK_founder_wc3_races_updatedBy FOREIGN KEY (updatedBy) REFERENCES users(id),
+      CONSTRAINT FK_founder_wc3_races_deletedBy FOREIGN KEY (deletedBy) REFERENCES users(id)
     );
   `);
 }
@@ -101,6 +142,13 @@ async function seedSocialPlatforms() {
   const values = platforms.map(() => '(?)').join(', ');
   const sql = `INSERT IGNORE INTO social_platforms (name) VALUES ${values};`;
   await pool.query(sql, platforms);
+}
+
+async function seedWarcraft3Races() {
+  const races = ['Human', 'Orc', 'Undead', 'Night Elf', 'Neutral'];
+  const values = races.map(() => '(?)').join(', ');
+  const sql = `INSERT IGNORE INTO wc3_races (name) VALUES ${values};`;
+  await pool.query(sql, races);
 }
 
 async function createDefaultUser() {
