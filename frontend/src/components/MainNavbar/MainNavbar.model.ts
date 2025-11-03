@@ -6,4 +6,5 @@ export interface MainDrawerNavigationLink {
   customIcon?: string;
   alt?: string;
   customFunction?: () => void;
+  hide?: boolean;
 }

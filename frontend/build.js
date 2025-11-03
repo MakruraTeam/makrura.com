@@ -9,15 +9,14 @@ const distDir = path.join(__dirname, 'dist');
 const htaccessPath = path.join(distDir, '.htaccess');
 
 const htaccessContent = `
-<IfModule mod_rewrite.c>
+<ifModule mod_rewrite.c>
   RewriteEngine On
   RewriteBase /
-
+  RewriteRule ^index\.html$ - [L]
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
-
   RewriteRule . /index.html [L]
-</IfModule>
+</ifModule>
 `;
 
 console.log('📝 Creating .htaccess in dist/...');
