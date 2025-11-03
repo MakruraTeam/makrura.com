@@ -25,7 +25,6 @@ const handleSubmit = async () => {
     await login(payload, rememberMe.value);
 
     router.push('/cms');
-    // router.push('/dashboard'); // or wherever your app should go
   } catch (err: any) {
     errorMessage.value = err?.message || 'Login failed. Please check your credentials.';
   } finally {

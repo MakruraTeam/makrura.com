@@ -2,7 +2,6 @@
 import { ref } from 'vue';
 import { register } from '@/services/auth/auth.service';
 import type { RegisterPayload } from '@/services/auth/auth.model';
-import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/auth';
 
 const login = ref('');
@@ -13,7 +12,6 @@ const loading = ref(false);
 const errorMessage = ref('');
 const successMessage = ref('');
 
-const router = useRouter();
 const auth = useAuthStore();
 
 const handleSubmit = async () => {

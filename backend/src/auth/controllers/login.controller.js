@@ -14,12 +14,12 @@ export async function loginUser(req, res) {
       [login]
     );
 
-    if (rows.length === 0) return res.status(400).json({ error: 'Invalid login' });
+    if (rows.length === 0) return res.status(400).json({ error: 'Invalid credentials' });
 
     const user = rows[0];
     const isValid = await comparePassword(password, user.hashedPassword);
 
-    if (!isValid) return res.status(400).json({ error: 'Invalid password' });
+    if (!isValid) return res.status(400).json({ error: 'Invalid credentials' });
 
     const token = jwt.sign({ id: user.id, login: user.login }, process.env.JWT_SECRET, { expiresIn: '7d' });
 
