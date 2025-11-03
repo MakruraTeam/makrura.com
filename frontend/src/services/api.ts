@@ -1,8 +1,7 @@
 import { ApiError } from './api.model';
 import { useAuthStore } from '@/stores/auth';
 
-const BACKEND_URL = 'http://localhost:3000/api';
-// const BACKEND_URL_PROD = 'https://makrura.com/api';
+const BACKEND_URL = process.env.NODE_ENV === 'development' ? 'http://localhost:3000/api' : 'https://makrura.com/api';
 
 async function request<T = unknown>(
   method: 'GET' | 'POST' | 'PATCH' | 'DELETE',
