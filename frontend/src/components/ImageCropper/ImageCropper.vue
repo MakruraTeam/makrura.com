@@ -5,11 +5,13 @@ import 'vue-advanced-cropper/dist/style.css';
 
 const props = defineProps<{
   modelValue: string | null;
+  label?: string;
 }>();
 
-const emit = defineEmits(['update:modelValue']);
+const emit = defineEmits(['update:modelValue', 'change']);
 
 const image = ref<string | null>(null);
+const selectedFile = ref<File | null>(null);
 const dialog = ref(false);
 const cropperRef = ref<InstanceType<typeof Cropper> | null>(null);
 const fileInput = ref<HTMLInputElement | null>(null);
@@ -29,6 +31,7 @@ watch(cropped, (newVal) => {
 const onFileChange = (e: Event) => {
   const target = e.target as HTMLInputElement;
   if (target.files && target.files[0]) {
+    selectedFile.value = target.files[0];
     const reader = new FileReader();
     reader.onload = (event) => {
       image.value = event.target?.result as string;
@@ -40,8 +43,11 @@ const onFileChange = (e: Event) => {
 
 const cropImage = () => {
   if (cropperRef.value) {
-    const { canvas } = cropperRef.value.getResult() as { canvas: HTMLCanvasElement };
+    const { canvas } = cropperRef.value.getResult() as {
+      canvas: HTMLCanvasElement;
+    };
     cropped.value = canvas.toDataURL('image/png');
+    emit('change', cropped.value, selectedFile.value);
   }
   dialog.value = false;
 };
@@ -53,6 +59,8 @@ const selectNewImage = () => {
 
 <template>
   <div class="text-center my-4">
+    <div v-if="label" class="mb-2 text-subtitle-1 font-weight-medium">{{ label }}</div>
+
     <input ref="fileInput" type="file" accept="image/*" @change="onFileChange" style="display: none" />
 
     <v-img

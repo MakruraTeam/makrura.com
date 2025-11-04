@@ -2,6 +2,8 @@ import { pool } from './db.js';
 import { hashPassword } from './auth/utils/hashPassword.js';
 
 export async function setupDatabase() {
+  await createImagesTable();
+
   await createUserTable();
   await createSocialPlatformsTable();
   await createFoundersTable();
@@ -14,6 +16,19 @@ export async function setupDatabase() {
   await createDefaultUser();
 }
 
+async function createImagesTable() {
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS images (
+      id INT AUTO_INCREMENT,
+      filename VARCHAR(255),
+      content_type VARCHAR(100),
+      data LONGBLOB NOT NULL,
+      createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      PRIMARY KEY (id)
+    );
+  `);
+}
+
 async function createUserTable() {
   await pool.query(`
     CREATE TABLE IF NOT EXISTS users (
@@ -24,16 +39,10 @@ async function createUserTable() {
       blocked BOOLEAN DEFAULT FALSE,
       
       createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-      createdBy INT NULL,
       updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-      updatedBy INT NULL,
       deletedAt TIMESTAMP NULL,
-      deletedBy INT NULL,
       
-      CONSTRAINT PK_users PRIMARY KEY (id),
-      CONSTRAINT FK_users_createdBy FOREIGN KEY (createdBy) REFERENCES users(id),
-      CONSTRAINT FK_users_updatedBy FOREIGN KEY (updatedBy) REFERENCES users(id),
-      CONSTRAINT FK_users_deletedBy FOREIGN KEY (deletedBy) REFERENCES users(id)
+      CONSTRAINT PK_users PRIMARY KEY (id)
     );
   `);
 }
@@ -57,20 +66,15 @@ async function createFoundersTable() {
       id INT AUTO_INCREMENT,
       name VARCHAR(120) NOT NULL,
       role VARCHAR(255) NOT NULL,
-      image VARCHAR(255) NOT NULL,
       contribution TEXT NOT NULL,
-      
+      imageId INT,
+
       createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-      createdBy INT NOT NULL,
       updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-      updatedBy INT NULL,
       deletedAt TIMESTAMP NULL,
-      deletedBy INT NULL,
-      
-      CONSTRAINT PK_founders PRIMARY KEY (id),
-      CONSTRAINT FK_founders_createdBy FOREIGN KEY (createdBy) REFERENCES users(id),
-      CONSTRAINT FK_founders_updatedBy FOREIGN KEY (updatedBy) REFERENCES users(id),
-      CONSTRAINT FK_founders_deletedBy FOREIGN KEY (deletedBy) REFERENCES users(id)
+
+      PRIMARY KEY (id),
+      CONSTRAINT FK_founders_image FOREIGN KEY (imageId) REFERENCES images(id) ON DELETE SET NULL
     );
   `);
 }
@@ -96,18 +100,12 @@ async function createFounderWarcraft3RacesTable() {
       raceId INT NOT NULL,
 
       createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-      createdBy INT NOT NULL,
       updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-      updatedBy INT NULL,
       deletedAt TIMESTAMP NULL,
-      deletedBy INT NULL,
 
       CONSTRAINT PK_founder_wc3_races PRIMARY KEY (id),
       CONSTRAINT FK_founder_wc3_races_founder FOREIGN KEY (founderId) REFERENCES founders(id) ON DELETE CASCADE,
-      CONSTRAINT FK_founder_wc3_races_race FOREIGN KEY (raceId) REFERENCES wc3_races(id) ON DELETE CASCADE,
-      CONSTRAINT FK_founder_wc3_races_createdBy FOREIGN KEY (createdBy) REFERENCES users(id),
-      CONSTRAINT FK_founder_wc3_races_updatedBy FOREIGN KEY (updatedBy) REFERENCES users(id),
-      CONSTRAINT FK_founder_wc3_races_deletedBy FOREIGN KEY (deletedBy) REFERENCES users(id)
+      CONSTRAINT FK_founder_wc3_races_race FOREIGN KEY (raceId) REFERENCES wc3_races(id) ON DELETE CASCADE
     );
   `);
 }
@@ -121,18 +119,12 @@ async function createFounderSocialLinksTable() {
       url VARCHAR(255) NOT NULL,
 
       createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-      createdBy INT NOT NULL,
       updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-      updatedBy INT NULL,
       deletedAt TIMESTAMP NULL,
-      deletedBy INT NULL,
 
       CONSTRAINT PK_founder_social_links PRIMARY KEY (id),
       CONSTRAINT FK_founder_social_links_founder FOREIGN KEY (founderId) REFERENCES founders(id) ON DELETE CASCADE,
-      CONSTRAINT FK_founder_social_links_platform FOREIGN KEY (platformId) REFERENCES social_platforms(id) ON DELETE CASCADE,
-      CONSTRAINT FK_founder_social_links_createdBy FOREIGN KEY (createdBy) REFERENCES users(id),
-      CONSTRAINT FK_founder_social_links_updatedBy FOREIGN KEY (updatedBy) REFERENCES users(id),
-      CONSTRAINT FK_founder_social_links_deletedBy FOREIGN KEY (deletedBy) REFERENCES users(id)
+      CONSTRAINT FK_founder_social_links_platform FOREIGN KEY (platformId) REFERENCES social_platforms(id) ON DELETE CASCADE
     );
   `);
 }

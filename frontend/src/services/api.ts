@@ -3,32 +3,29 @@ import { useAuthStore } from '@/stores/auth';
 
 const BACKEND_URL = process.env.NODE_ENV === 'development' ? 'http://localhost:3000/api' : 'https://makrura.com/api';
 
-async function request<T = unknown>(
-  method: 'GET' | 'POST' | 'PATCH' | 'DELETE',
-  endpoint: string,
-  body?: Record<string, unknown>,
-  auth = false
-): Promise<T> {
+export async function request<T = unknown>(method: 'GET' | 'POST' | 'PATCH' | 'DELETE', endpoint: string, body?: any, auth = false): Promise<T> {
   const url = `${BACKEND_URL}${endpoint}`;
+  const headers: Record<string, string> = {};
 
-  const headers: Record<string, string> = {
-    'Content-Type': 'application/json',
-  };
+  const isFormData = body instanceof FormData;
+  if (!isFormData) headers['Content-Type'] = 'application/json';
 
   if (auth) {
     const token = useAuthStore().getToken;
-    if (token) {
-      headers.Authorization = `Bearer ${token}`;
-    }
+    if (token) headers.Authorization = `Bearer ${token}`;
   }
 
-  const res = await fetch(url, {
+  const options: RequestInit = {
     method,
     headers,
-    body: body ? JSON.stringify(body) : undefined,
-  });
+  };
 
-  const data = res.status === 204 ? undefined : await res.json();
+  if (body) {
+    options.body = isFormData ? body : JSON.stringify(body);
+  }
+
+  const res = await fetch(url, options);
+  const data = res.status === 204 ? undefined : await res.json().catch(() => undefined);
 
   if (!res.ok) {
     if (auth && (res.status === 401 || res.status === 403)) {
@@ -38,19 +35,26 @@ async function request<T = unknown>(
         console.warn('Failed to remove invalid auth token from store.');
       }
     }
-    const message = (data && typeof data === 'object' && 'error' in (data as any) && (data as any).error) || res.statusText || 'Request failed';
+
+    const message = (data && typeof data === 'object' && 'error' in (data as any) ? (data as any).error : res.statusText) || 'Request failed';
     throw new ApiError(String(message), res.status, data);
   }
 
   return data as T;
 }
 
-export const defaultGet = async <T = unknown>(endpoint: string, auth = false) => request<T>('GET', endpoint, undefined, auth);
+export function defaultGet<T>(endpoint: string, auth = false) {
+  return request<T>('GET', endpoint, undefined, auth);
+}
 
-export const defaultPost = async <T = unknown>(endpoint: string, data: Record<string, unknown>, auth = false) =>
-  request<T>('POST', endpoint, data, auth);
+export function defaultPost<T>(endpoint: string, body?: any, auth = false) {
+  return request<T>('POST', endpoint, body, auth);
+}
 
-export const defaultPatch = async <T = unknown>(endpoint: string, data: Record<string, unknown>, auth = false) =>
-  request<T>('PATCH', endpoint, data, auth);
+export function defaultPatch<T>(endpoint: string, body?: any, auth = false) {
+  return request<T>('PATCH', endpoint, body, auth);
+}
 
-export const defaultDelete = async <T = unknown>(endpoint: string, auth = false) => request<T>('DELETE', endpoint, undefined, auth);
+export function defaultDelete<T>(endpoint: string, body?: any, auth = false) {
+  return request<T>('DELETE', endpoint, body, auth);
+}
