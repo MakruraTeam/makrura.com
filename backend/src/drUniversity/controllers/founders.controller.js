@@ -14,7 +14,7 @@ export async function getAllFounders(req, res) {
       FROM founders f
       LEFT JOIN images i ON f.imageId = i.id
       WHERE f.deletedAt IS NULL
-      ORDER BY f.createdAt DESC;
+      ORDER BY f.createdAt ASC;
     `);
 
     const [races] = await pool.query(`
