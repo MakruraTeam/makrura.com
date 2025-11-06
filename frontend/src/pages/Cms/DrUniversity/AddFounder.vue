@@ -23,7 +23,6 @@ const successMessage = ref('');
 onMounted(async () => {
   try {
     const [racesRes, socialRes] = await Promise.all([getWc3Races(), getSocialPlatforms()]);
-
     races.value = racesRes ?? [];
     socialPlatforms.value = socialRes ?? [];
 
@@ -93,7 +92,7 @@ const handleSubmit = async () => {
 <template>
   <v-container class="fill-height d-flex align-center justify-center">
     <v-card class="pa-6" width="100%">
-      <v-card-title class="text-h5 text-center mb-4"> Add New Founder </v-card-title>
+      <v-card-title class="text-h5 text-center mb-4">Add New Founder</v-card-title>
 
       <v-card-text>
         <v-form @submit.prevent="handleSubmit">
