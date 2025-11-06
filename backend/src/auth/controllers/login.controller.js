@@ -9,7 +9,8 @@ export async function loginUser(req, res) {
     const [rows] = await pool.query(
       `
       SELECT id, login, hashedPassword FROM users
-      WHERE login = ? AND deletedAt IS NULL
+      WHERE login = ? 
+      AND blocked IS FALSE
       `,
       [login]
     );

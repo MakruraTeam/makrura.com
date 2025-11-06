@@ -27,6 +27,7 @@ export function buildSocialMap(rows) {
 
 export function buildFounderCard(founder, raceMap, socials) {
   return {
+    id: founder.id,
     image: founder.imageId ? `/api/common/images/${founder.imageId}` : null,
     name: founder.name,
     role: founder.role,

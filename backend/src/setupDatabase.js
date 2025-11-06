@@ -39,8 +39,6 @@ async function createUserTable() {
       blocked BOOLEAN DEFAULT FALSE,
       
       createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-      updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-      deletedAt TIMESTAMP NULL,
       
       CONSTRAINT PK_users PRIMARY KEY (id)
     );
@@ -70,8 +68,6 @@ async function createFoundersTable() {
       imageId INT,
 
       createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-      updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-      deletedAt TIMESTAMP NULL,
 
       PRIMARY KEY (id),
       CONSTRAINT FK_founders_image FOREIGN KEY (imageId) REFERENCES images(id) ON DELETE SET NULL
@@ -100,9 +96,7 @@ async function createFounderWarcraft3RacesTable() {
       raceId INT NOT NULL,
 
       createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-      updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-      deletedAt TIMESTAMP NULL,
-
+    
       CONSTRAINT PK_founder_wc3_races PRIMARY KEY (id),
       CONSTRAINT FK_founder_wc3_races_founder FOREIGN KEY (founderId) REFERENCES founders(id) ON DELETE CASCADE,
       CONSTRAINT FK_founder_wc3_races_race FOREIGN KEY (raceId) REFERENCES wc3_races(id) ON DELETE CASCADE
@@ -119,8 +113,6 @@ async function createFounderSocialLinksTable() {
       url VARCHAR(255) NOT NULL,
 
       createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-      updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-      deletedAt TIMESTAMP NULL,
 
       CONSTRAINT PK_founder_social_links PRIMARY KEY (id),
       CONSTRAINT FK_founder_social_links_founder FOREIGN KEY (founderId) REFERENCES founders(id) ON DELETE CASCADE,

@@ -13,7 +13,6 @@ export async function getAllFounders(req, res) {
         i.filename AS image_filename
       FROM founders f
       LEFT JOIN images i ON f.imageId = i.id
-      WHERE f.deletedAt IS NULL
       ORDER BY f.createdAt ASC;
     `);
 
@@ -103,6 +102,44 @@ export async function createFounder(req, res) {
   } catch (err) {
     await connection.rollback();
     console.error('Error creating founder:', err);
+    res.status(500).json({ error: 'Server error', details: err.message });
+  } finally {
+    connection.release();
+  }
+}
+
+export async function deleteFounder(req, res) {
+  const { id } = req.params;
+
+  if (!id) {
+    return res.status(400).json({ error: 'Founder ID is required' });
+  }
+
+  const connection = await pool.getConnection();
+  try {
+    await connection.beginTransaction();
+
+    const [founders] = await connection.query(`SELECT imageId FROM founders WHERE id = ?`, [id]);
+
+    if (founders.length === 0) {
+      await connection.rollback();
+      return res.status(404).json({ error: 'Founder not found' });
+    }
+
+    const imageId = founders[0].imageId;
+
+    await connection.query(`DELETE FROM founders WHERE id = ?`, [id]);
+
+    if (imageId) {
+      await connection.query(`DELETE FROM images WHERE id = ?`, [imageId]);
+    }
+
+    await connection.commit();
+
+    res.json({ message: 'Founder and related data deleted permanently' });
+  } catch (err) {
+    await connection.rollback();
+    console.error('Error deleting founder:', err);
     res.status(500).json({ error: 'Server error', details: err.message });
   } finally {
     connection.release();
