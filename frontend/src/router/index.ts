@@ -9,6 +9,7 @@ import CmsDashboard from '@/pages/Cms/CmsDashboard.vue';
 import { useAuthStore } from '@/stores/auth';
 import AddUser from '@/pages/Cms/Users/AddUser.vue';
 import AddFounder from '@/pages/Cms/DrUniversity/AddFounder.vue';
+import ManageFounders from '@/pages/Cms/DrUniversity/ManageFounders.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -105,7 +106,7 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: 'manage-founders',
         name: 'cms-manage-founders',
-        component: PageInDevelopment,
+        component: ManageFounders,
       },
     ],
   },

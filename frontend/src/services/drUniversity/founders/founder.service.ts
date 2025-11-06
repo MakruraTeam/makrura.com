@@ -1,4 +1,4 @@
-import { BACKEND_HOST, defaultGet, defaultPost } from '@/services/api';
+import { BACKEND_HOST, defaultDelete, defaultGet, defaultPost } from '@/services/api';
 import { Founder, SocialPlatform, UploadedImage, Wc3Races } from './founder.model';
 import { FounderCardProps } from '@/components/DrUniversity/FounderCard/FounderCard.model';
 
@@ -29,4 +29,8 @@ export async function getAllFounders() {
     ...f,
     image: `${BACKEND_HOST}${f.image}`,
   }));
+}
+
+export async function deleteFounder(id: number) {
+  return defaultDelete<{ message: string }>(`/dr-university/founders/${id}`, undefined, true);
 }

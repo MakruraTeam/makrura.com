@@ -20,6 +20,8 @@ const loading = ref(false);
 const errorMessage = ref('');
 const successMessage = ref('');
 
+const pageLoading = ref(true);
+
 onMounted(async () => {
   try {
     const [racesRes, socialRes] = await Promise.all([getWc3Races(), getSocialPlatforms()]);
@@ -29,6 +31,8 @@ onMounted(async () => {
     socialLinks.value = Object.fromEntries(socialPlatforms.value.map((p) => [p.name, '']));
   } catch (err) {
     errorMessage.value = 'Failed to load required data.';
+  } finally {
+    pageLoading.value = false;
   }
 });
 
@@ -94,7 +98,9 @@ const handleSubmit = async () => {
     <v-card class="pa-6" width="100%">
       <v-card-title class="text-h5 text-center mb-4">Add New Founder</v-card-title>
 
-      <v-card-text>
+      <v-progress-circular v-if="pageLoading" indeterminate color="primary" class="d-flex mx-auto my-6" />
+
+      <v-card-text v-else>
         <v-form @submit.prevent="handleSubmit">
           <v-text-field v-model="name" label="Founder name" prepend-inner-icon="mdi-account" outlined required />
 
