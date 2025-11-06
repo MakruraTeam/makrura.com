@@ -1,7 +1,8 @@
 import { ApiError } from './api.model';
 import { useAuthStore } from '@/stores/auth';
 
-const BACKEND_URL = process.env.NODE_ENV === 'development' ? 'http://localhost:3000/api' : 'https://makrura.com/api';
+export const BACKEND_HOST = process.env.NODE_ENV === 'development' ? 'http://localhost:3000' : 'https://makrura.com';
+const BACKEND_URL = `${BACKEND_HOST}/api`;
 
 export async function request<T = unknown>(method: 'GET' | 'POST' | 'PATCH' | 'DELETE', endpoint: string, body?: any, auth = false): Promise<T> {
   const url = `${BACKEND_URL}${endpoint}`;
