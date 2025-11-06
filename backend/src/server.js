@@ -8,6 +8,9 @@ import process from 'process';
 import { connectToDatabase } from './db.js';
 import { setupDatabase } from './setupDatabase.js';
 import authRoutes from './auth/routes/auth.routes.js';
+import wc3Routes from './wc3/routes/wc3.routes.js';
+import commonRoutes from './common/routes/common.routes.js';
+import drUniversityRoutes from './drUniversity/routes/drUniversity.routes.js';
 
 dotenv.config();
 
@@ -18,6 +21,9 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use('/api/auth', authRoutes);
+app.use('/api/wc3', wc3Routes);
+app.use('/api/common', commonRoutes);
+app.use('/api/dr-university', drUniversityRoutes);
 
 // build
 const publicPath = path.join(process.cwd(), 'public');

@@ -5,6 +5,9 @@ import vuetify from './plugins/vuetify';
 
 import '@fontsource/roboto';
 import '@mdi/font/css/materialdesignicons.css';
+import 'quill/dist/quill.snow.css';
+import 'vue-advanced-cropper/dist/style.css';
+
 import { createPinia } from 'pinia';
 import { useAuthStore } from './stores/auth';
 
