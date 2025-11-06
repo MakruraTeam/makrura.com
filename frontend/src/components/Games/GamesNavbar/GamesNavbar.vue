@@ -1,10 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-
-interface NavLink {
-  label: string;
-  name: string;
-}
+import { NavLink } from './GamesNavbar.model';
 
 const navLinks = computed<NavLink[]>(() => [{ label: 'Attack Armor Value Game', name: 'attack-armor-value-game' }]);
 </script>

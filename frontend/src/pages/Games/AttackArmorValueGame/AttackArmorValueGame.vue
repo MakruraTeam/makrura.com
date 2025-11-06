@@ -47,6 +47,10 @@ const focusedRow = ref<string | null>(null);
 const showConfetti = ref(false);
 
 const hardcoreMode = ref(false);
+const timer = ref(0);
+const timerDisplay = ref('00:00.00');
+const timerInterval = ref<number | null>(null);
+const timerRunning = ref(false);
 
 watch(
   results,
@@ -54,11 +58,23 @@ watch(
     const allFilled = Object.values(newResults).every((attackRow) => Object.values(attackRow).every((val) => val === true));
 
     if (allFilled) {
+      stopTimer();
       explode();
     }
   },
   { deep: true }
 );
+
+watch(hardcoreMode, (enabled) => {
+  if (enabled) {
+    shuffleTable();
+    resetTable();
+    resetTimer();
+  } else {
+    stopTimer();
+    resetTimer();
+  }
+});
 
 initializeTables();
 
@@ -82,9 +98,44 @@ function shuffleTable(): void {
   attacks.value = shuffle([...attacks.value]);
 }
 
+function startTimer(): void {
+  if (timerRunning.value) return;
+  timerRunning.value = true;
+  const startTime = performance.now() - timer.value;
+  timerInterval.value = window.setInterval(() => {
+    timer.value = performance.now() - startTime;
+    timerDisplay.value = formatTime(timer.value);
+  }, 10);
+}
+
+function stopTimer(): void {
+  if (timerInterval.value) {
+    clearInterval(timerInterval.value);
+    timerInterval.value = null;
+  }
+  timerRunning.value = false;
+}
+
+function resetTimer(): void {
+  stopTimer();
+  timer.value = 0;
+  timerDisplay.value = '00:00.00';
+}
+
+function formatTime(ms: number): string {
+  const totalSeconds = ms / 1000;
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = Math.floor(totalSeconds % 60);
+  const centiseconds = Math.floor((totalSeconds * 100) % 100);
+  return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}.${String(centiseconds).padStart(2, '0')}`;
+}
+
 function checkValue(attack: AttackType, armor: ArmorType): void {
   const correctValue = game.getDamageValue(attack, armor);
   const userValue = parseFloat(userInputs.value[attack][armor].replace('%', ''));
+  if (hardcoreMode.value && !timerRunning.value && !isNaN(userValue)) {
+    startTimer();
+  }
   if (isNaN(userValue)) {
     results.value[attack][armor] = null;
     return;
@@ -95,6 +146,7 @@ function checkValue(attack: AttackType, armor: ArmorType): void {
 
   if (hardcoreMode.value && !isCorrect) {
     resetTable();
+    resetTimer();
     shuffleTable();
   }
 }
@@ -108,6 +160,7 @@ function getCellColor(attack: AttackType, armor: ArmorType): string {
 function handleFocus(attack: AttackType): void {
   focusedRow.value = attack;
 }
+
 function handleBlur(): void {
   focusedRow.value = null;
 }
@@ -142,7 +195,10 @@ function handleKeyNavigation(event: KeyboardEvent, attack: AttackType, armor: Ar
     event.preventDefault();
 
     requestAnimationFrame((): void => {
-      const wrapper = document.querySelector<HTMLElement>(`.cell-wrapper[data-attack="${attacks.value[nextAttackIndex].name}"][data-armor="${armors.value[nextArmorIndex].name}"]`);
+      const wrapper = document.querySelector<HTMLElement>(
+        `.cell-wrapper[data-attack="${attacks.value[nextAttackIndex].name}"][data-armor="${armors.value[nextArmorIndex].name}"]`
+      );
+
       const nextInput = wrapper?.querySelector('input');
       nextInput?.focus();
     });
@@ -156,14 +212,8 @@ function resetTable(): void {
       results.value[atk.name][arm.name] = null;
     }
   }
+  resetTimer();
 }
-
-watch(hardcoreMode, (enabled) => {
-  if (enabled) {
-    shuffleTable();
-    resetTable();
-  }
-});
 
 async function explode(): Promise<void> {
   showConfetti.value = false;
@@ -224,6 +274,9 @@ async function explode(): Promise<void> {
           </tr>
         </tbody>
       </v-table>
+    </div>
+    <div v-if="hardcoreMode" class="timer-display mt-4">
+      {{ timerDisplay }}
     </div>
   </v-container>
 
@@ -345,5 +398,17 @@ td {
   font-size: 1.1rem;
   user-select: none;
   white-space: nowrap;
+}
+
+.timer-display {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #e53935;
+  font-family: 'Courier New', monospace;
+  background: #000;
+  padding: 8px 16px;
+  border-radius: 8px;
+  margin-top: 16px;
+  user-select: none;
 }
 </style>
