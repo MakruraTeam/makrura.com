@@ -8,7 +8,6 @@ export async function registerUser(req, res) {
     }
 
     const { login, email, password, repeatPassword } = req.body;
-    const createdBy = req.user.id;
 
     if (!login || !email || !password || !repeatPassword) {
       return res.status(400).json({ error: 'Missing fields' });
@@ -34,10 +33,10 @@ export async function registerUser(req, res) {
 
     await pool.query(
       `
-      INSERT INTO users (login, email, hashedPassword, createdBy)
-      VALUES (?, ?, ?, ?)
+      INSERT INTO users (login, email, hashedPassword)
+      VALUES (?, ?, ?)
       `,
-      [login, email, hashed, createdBy]
+      [login, email, hashed]
     );
 
     res.status(201).json({ message: 'User created successfully' });
