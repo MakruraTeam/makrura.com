@@ -2,6 +2,7 @@
 import SaulDrCircle from '@/assets/imgs/saul-dr-circle.png';
 import MakruraLogo from '@/assets/imgs/makrura.png';
 import GamesLogo from '@/assets/imgs/games.png';
+import PalaRiffleLogo from '@/assets/imgs/paladin.png';
 import { MainDrawerNavigationLink } from './MainNavbar.model';
 import { computed, Ref, ref, watch } from 'vue';
 import { useDisplay } from 'vuetify';
@@ -27,6 +28,13 @@ const navLinks: Ref<MainDrawerNavigationLink[]> = computed(() => [
     to: '/dru',
     customIcon: SaulDrCircle,
     alt: 'DR University Logo',
+    location: 'top',
+  },
+  {
+    title: 'PR University',
+    to: '/pru',
+    customIcon: PalaRiffleLogo,
+    alt: 'PR University Logo',
     location: 'top',
   },
   {

@@ -1,4 +1,5 @@
 export interface FounderCardProps {
+  id: number;
   image: string;
   name: string;
   role: string;
