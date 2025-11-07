@@ -11,6 +11,7 @@ import AddUser from '@/pages/Cms/Users/AddUser.vue';
 import AddFounder from '@/pages/Cms/DrUniversity/AddFounder.vue';
 import ManageFounders from '@/pages/Cms/DrUniversity/ManageFounders.vue';
 import PalaRiffleUniversity from '@/pages/PrUniversity/PalaRiffleUniversity.vue';
+import EditFounder from '@/pages/Cms/DrUniversity/EditFounder.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -113,6 +114,11 @@ const routes: Array<RouteRecordRaw> = [
         path: 'manage-founders',
         name: 'cms-manage-founders',
         component: ManageFounders,
+      },
+      {
+        path: 'edit-founder/:id',
+        name: 'cms-edit-founder',
+        component: EditFounder,
       },
     ],
   },

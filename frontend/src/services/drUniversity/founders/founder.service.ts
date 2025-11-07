@@ -1,4 +1,4 @@
-import { BACKEND_HOST, defaultDelete, defaultGet, defaultPost } from '@/services/api';
+import { BACKEND_HOST, defaultDelete, defaultGet, defaultPatch, defaultPost } from '@/services/api';
 import { Founder, SocialPlatform, UploadedImage, Wc3Races } from './founder.model';
 import { FounderCardProps } from '@/components/DrUniversity/FounderCard/FounderCard.model';
 
@@ -31,6 +31,19 @@ export async function getAllFounders() {
   }));
 }
 
+export async function getFounderById(id: number) {
+  const data = await defaultGet<FounderCardProps>(`/dr-university/founders/${id}`, false);
+
+  return {
+    ...data,
+    image: `${BACKEND_HOST}${data.image}`,
+  };
+}
+
 export async function deleteFounder(id: number) {
   return defaultDelete<{ message: string }>(`/dr-university/founders/${id}`, undefined, true);
+}
+
+export async function patchFounderById(id: number, founder: Founder) {
+  return defaultPatch<{ message: string; founder: Founder }>(`/dr-university/founders/${id}`, founder, true);
 }

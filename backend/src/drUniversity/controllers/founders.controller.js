@@ -41,6 +41,63 @@ export async function getAllFounders(req, res) {
   }
 }
 
+export async function getFounderById(req, res) {
+  const { id } = req.params;
+
+  try {
+    const [founders] = await pool.query(
+      `
+      SELECT 
+        f.id,
+        f.name,
+        f.role,
+        f.contribution,
+        f.imageId,
+        i.filename AS image_filename
+      FROM founders f
+      LEFT JOIN images i ON f.imageId = i.id
+      WHERE f.id = ?;
+      `,
+      [id]
+    );
+
+    if (founders.length === 0) {
+      return res.status(404).json({ error: 'Founder not found' });
+    }
+
+    const founder = founders[0];
+
+    const [races] = await pool.query(
+      `
+      SELECT r.name
+      FROM founder_wc3_races fr
+      JOIN wc3_races r ON r.id = fr.raceId
+      WHERE fr.founderId = ?;
+      `,
+      [id]
+    );
+
+    const [socials] = await pool.query(
+      `
+      SELECT sp.name AS platform, fsl.url
+      FROM founder_social_links fsl
+      JOIN social_platforms sp ON sp.id = fsl.platformId
+      WHERE fsl.founderId = ?;
+      `,
+      [id]
+    );
+
+    const raceMap = buildRaceMap(races);
+    const socialObj = buildSocialMap(socials);
+    const founderCard = buildFounderCard(founder, raceMap, socialObj);
+
+    res.json(founderCard);
+  } catch (err) {
+    console.error('Error fetching founder by ID:', err);
+    res.status(500).json({ error: 'Server error', details: err.message });
+  }
+}
+
 export async function createFounder(req, res) {
   const connection = await pool.getConnection();
   try {
@@ -140,6 +197,115 @@ export async function deleteFounder(req, res) {
   } catch (err) {
     await connection.rollback();
     console.error('Error deleting founder:', err);
+    res.status(500).json({ error: 'Server error', details: err.message });
+  } finally {
+    connection.release();
+  }
+}
+
+export async function patchFounderById(req, res) {
+  const { id } = req.params;
+  const { name, role, contribution, imageId, races, socialLinks } = req.body;
+
+  if (!id) {
+    return res.status(400).json({ error: 'Founder ID is required' });
+  }
+
+  const connection = await pool.getConnection();
+
+  try {
+    await connection.beginTransaction();
+
+    const [founderRows] = await connection.query(`SELECT * FROM founders WHERE id = ?`, [id]);
+    if (founderRows.length === 0) {
+      await connection.rollback();
+      return res.status(404).json({ error: 'Founder not found' });
+    }
+
+    const oldFounder = founderRows[0];
+    const oldImageId = oldFounder.imageId;
+
+    if (imageId && oldImageId && imageId !== oldImageId) {
+      await connection.query(`DELETE FROM images WHERE id = ?`, [oldImageId]);
+    }
+
+    await connection.query(
+      `
+      UPDATE founders
+      SET 
+        name = COALESCE(?, name),
+        role = COALESCE(?, role),
+        contribution = COALESCE(?, contribution),
+        imageId = COALESCE(?, imageId)
+      WHERE id = ?;
+      `,
+      [name, role, contribution, imageId, id]
+    );
+
+    if (Array.isArray(races)) {
+      await connection.query(`DELETE FROM founder_wc3_races WHERE founderId = ?`, [id]);
+      if (races.length > 0) {
+        const raceValues = races.map((raceId) => [id, raceId]);
+        await connection.query(`INSERT INTO founder_wc3_races (founderId, raceId) VALUES ?`, [raceValues]);
+      }
+    }
+
+    if (Array.isArray(socialLinks)) {
+      await connection.query(`DELETE FROM founder_social_links WHERE founderId = ?`, [id]);
+      const validLinks = socialLinks.filter((s) => s.id && s.link);
+      if (validLinks.length > 0) {
+        const socialValues = validLinks.map((s) => [id, s.id, s.link]);
+        await connection.query(`INSERT INTO founder_social_links (founderId, platformId, url) VALUES ?`, [socialValues]);
+      }
+    }
+
+    await connection.commit();
+
+    const [founderResult] = await connection.query(
+      `
+      SELECT 
+        f.id,
+        f.name,
+        f.role,
+        f.contribution,
+        f.imageId,
+        i.filename AS image_filename
+      FROM founders f
+      LEFT JOIN images i ON f.imageId = i.id
+      WHERE f.id = ?;
+      `,
+      [id]
+    );
+
+    const founder = founderResult[0];
+
+    const [raceRows] = await connection.query(
+      `SELECT r.name
+       FROM founder_wc3_races fr
+       JOIN wc3_races r ON r.id = fr.raceId
+       WHERE fr.founderId = ?`,
+      [id]
+    );
+
+    const [socialRows] = await connection.query(
+      `SELECT sp.name AS platform, fsl.url
+       FROM founder_social_links fsl
+       JOIN social_platforms sp ON sp.id = fsl.platformId
+       WHERE fsl.founderId = ?`,
+      [id]
+    );
+
+    const raceMap = buildRaceMap(raceRows);
+    const socials = buildSocialMap(socialRows);
+    const founderCard = buildFounderCard(founder, raceMap, socials);
+
+    res.json({
+      message: 'Founder updated successfully',
+      founder: founderCard,
+    });
+  } catch (err) {
+    await connection.rollback();
+    console.error('Error updating founder:', err);
     res.status(500).json({ error: 'Server error', details: err.message });
   } finally {
     connection.release();

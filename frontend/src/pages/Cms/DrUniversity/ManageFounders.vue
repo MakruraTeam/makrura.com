@@ -2,10 +2,12 @@
 import { FounderCardProps } from '@/components/DrUniversity/FounderCard/FounderCard.model';
 import { getAllFounders, deleteFounder } from '@/services/drUniversity/founders/founder.service';
 import { onMounted, ref } from 'vue';
+import { useRouter } from 'vue-router';
 
 const founders = ref<FounderCardProps[]>([]);
 const loading = ref(true);
 const error = ref<string | null>(null);
+const router = useRouter();
 
 const dialog = ref(false);
 const selectedFounder = ref<FounderCardProps | null>(null);
@@ -49,6 +51,10 @@ function cancelDelete() {
   dialog.value = false;
 }
 
+function openEditPage(id: number) {
+  router.push({ name: 'cms-edit-founder', params: { id } });
+}
+
 onMounted(loadFounders);
 </script>
 
@@ -68,7 +74,7 @@ onMounted(loadFounders);
           <v-list-item-title> {{ founder.name }} - {{ founder.role }} </v-list-item-title>
 
           <template #append>
-            <v-btn icon variant="text" color="primary">
+            <v-btn icon variant="text" color="primary" @click="openEditPage(founder.id)">
               <v-icon>mdi-pencil</v-icon>
             </v-btn>
             <v-btn icon variant="text" color="error" @click="openDeleteDialog(founder)">

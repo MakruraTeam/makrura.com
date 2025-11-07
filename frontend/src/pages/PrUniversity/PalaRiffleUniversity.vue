@@ -4,6 +4,17 @@ import rifflemanImage from '@/assets/imgs/riffleman.jpg';
 
 <template>
   <v-container class="fill-height d-flex align-center justify-center">
-    <v-img :src="rifflemanImage" max-width="800" max-height="800" contain></v-img>
+    <img :src="rifflemanImage" class="riffleman-image" alt="Riffleman Logo" />
   </v-container>
 </template>
+
+<style scoped>
+.riffleman-image {
+  max-width: 90vw;
+  max-height: 90vh;
+  width: 700px;
+  height: 700px;
+  object-fit: contain;
+  display: block;
+}
+</style>

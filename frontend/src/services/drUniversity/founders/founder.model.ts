@@ -28,7 +28,7 @@ export interface Founder {
   name: string;
   role: string;
   contribution: string;
-  imageId?: number | null;
+  imageId?: number;
   races?: number[];
   socialLinks?: {
     id: number;
