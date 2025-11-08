@@ -7,17 +7,23 @@ import GamesLayout from '@/layouts/GamesLayout.vue';
 import CmsLogin from '@/pages/Cms/CmsLogin.vue';
 import CmsDashboard from '@/pages/Cms/CmsDashboard.vue';
 import { useAuthStore } from '@/stores/auth';
-import AddUser from '@/pages/Cms/Users/AddUser.vue';
+import AddUser from '@/pages/Cms/users/AddUser.vue';
 import AddFounder from '@/pages/Cms/DrUniversity/AddFounder.vue';
 import ManageFounders from '@/pages/Cms/DrUniversity/ManageFounders.vue';
 import PalaRiffleUniversity from '@/pages/PrUniversity/PalaRiffleUniversity.vue';
 import EditFounder from '@/pages/Cms/DrUniversity/EditFounder.vue';
 import DrUniversityHome from '@/pages/DrUniversity/DrUniversityHome.vue';
+import DrUniversityPost from '@/pages/DrUniversity/DrUniversityPost.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
     redirect: '/dru',
+  },
+  {
+    path: '/article/:slug',
+    name: 'dr-university-article',
+    component: DrUniversityPost,
   },
   {
     path: '/dru',
@@ -29,6 +35,7 @@ const routes: Array<RouteRecordRaw> = [
         name: 'dr-university-home',
         component: DrUniversityHome,
       },
+
       {
         path: 'table',
         name: 'dr-university-table',

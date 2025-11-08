@@ -2,7 +2,6 @@
 import { ref, computed } from 'vue';
 import BlogImage from '@/assets/imgs/blog1.png';
 import BlogCard from '@/components/DrUniversity/BlogCard/BlogCard.vue';
-import { VPagination } from 'vuetify/components';
 import { Platform } from '@/components/DrUniversity/BlogCard/BlogCard.model';
 
 const title = 'Dark Ranger First in W3Champions Season 22 Finals: Starbuck vs Dise';
@@ -17,7 +16,7 @@ const links = [
 ];
 
 const blogs = Array.from({ length: 100 }).map((_, idx) => ({
-  title: idx + 1 + ' ' + title,
+  title: `${idx + 1} ${title}`,
   text,
   links,
   image: BlogImage,
@@ -35,18 +34,29 @@ const paginatedBlogs = computed(() => {
 </script>
 
 <template>
-  <v-container class="py-6 d-flex justify-center flex-column align-center ga-4">
-    <div v-for="(blog, index) in paginatedBlogs" :key="index">
+  <v-container class="py-6 d-flex flex-column align-center ga-4">
+    <div v-for="(blog, index) in paginatedBlogs" :key="index" class="w-100 d-flex justify-center">
       <BlogCard :title="blog.title" :text="blog.text" :links="blog.links" :image="blog.image" />
     </div>
 
-    <v-pagination v-if="totalPages > 1" v-model="currentPage" :length="totalPages" total-visible="5" class="mt-6" />
+    <div class="w-100 d-flex justify-center mt-6">
+      <v-pagination v-if="totalPages > 1" v-model="currentPage" :length="totalPages" total-visible="5" class="pagination" />
+    </div>
   </v-container>
 </template>
 
 <style scoped>
-.v-pagination {
+:deep(.v-pagination) {
+  max-width: 100%;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 4px;
+  overflow-x: hidden;
+}
+
+:deep(.v-pagination__list) {
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
 }
 </style>
