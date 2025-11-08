@@ -12,6 +12,7 @@ import AddFounder from '@/pages/Cms/DrUniversity/AddFounder.vue';
 import ManageFounders from '@/pages/Cms/DrUniversity/ManageFounders.vue';
 import PalaRiffleUniversity from '@/pages/PrUniversity/PalaRiffleUniversity.vue';
 import EditFounder from '@/pages/Cms/DrUniversity/EditFounder.vue';
+import DrUniversityHome from '@/pages/DrUniversity/DrUniversityHome.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -26,7 +27,7 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: '',
         name: 'dr-university-home',
-        component: PageInDevelopment,
+        component: DrUniversityHome,
       },
       {
         path: 'table',
@@ -103,6 +104,11 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: 'manage-blog-posts',
         name: 'cms-manage-blog-posts',
+        component: PageInDevelopment,
+      },
+      {
+        path: 'edit-blog-post/:id',
+        name: 'cms-edit-blog-post',
         component: PageInDevelopment,
       },
       {
