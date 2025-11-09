@@ -10,7 +10,7 @@ export enum Platform {
   'W3CHAMPIONS' = 'w3champions',
 }
 
-export interface BlogCardProps {
+export interface ArticleCardProps {
   title: string;
   text: string;
   links: { link: string; platform: Platform; description: string }[];

@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import BlogImage from '@/assets/imgs/blog1.png';
-import BlogCard from '@/components/DrUniversity/BlogCard/BlogCard.vue';
-import { Platform } from '@/components/DrUniversity/BlogCard/BlogCard.model';
+import ArticleCard from '@/components/DrUniversity/ArticleCard/ArticleCard.vue';
+import { Platform } from '@/components/DrUniversity/ArticleCard/ArticleCard.model';
 
 const title = 'Dark Ranger First in W3Champions Season 22 Finals: Starbuck vs Dise';
 const text = `
@@ -36,7 +36,7 @@ const paginatedBlogs = computed(() => {
 <template>
   <v-container class="py-6 d-flex flex-column align-center ga-4">
     <div v-for="(blog, index) in paginatedBlogs" :key="index" class="w-100 d-flex justify-center">
-      <BlogCard :title="blog.title" :text="blog.text" :links="blog.links" :image="blog.image" />
+      <ArticleCard :title="blog.title" :text="blog.text" :links="blog.links" :image="blog.image" />
     </div>
 
     <div class="w-100 d-flex justify-center mt-6">

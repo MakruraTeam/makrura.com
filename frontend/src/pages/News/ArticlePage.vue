@@ -10,7 +10,7 @@ import redditIcon from '@/assets/imgs/reddit.png';
 import w3championsIcon from '@/assets/imgs/w3c.png';
 
 import BlogImage from '@/assets/imgs/blog1.png';
-import { Platform } from '@/components/DrUniversity/BlogCard/BlogCard.model';
+import { Platform } from '@/components/DrUniversity/ArticleCard/ArticleCard.model';
 import { computed } from 'vue';
 import DOMPurify from 'dompurify';
 
