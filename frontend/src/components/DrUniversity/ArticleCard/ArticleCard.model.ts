@@ -12,7 +12,8 @@ export enum Platform {
 
 export interface ArticleCardProps {
   title: string;
-  text: string;
-  links: { link: string; platform: Platform; description: string }[];
+  shortDescription: string;
+  slug: string;
   image: string;
+  links: { link: string; platform: Platform; description: string }[];
 }

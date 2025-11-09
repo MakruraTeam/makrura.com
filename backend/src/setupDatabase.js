@@ -2,17 +2,30 @@ import { pool } from './db.js';
 import { hashPassword } from './auth/utils/hashPassword.js';
 
 export async function setupDatabase() {
+  //GLOBAL
   await createImagesTable();
-
-  await createUserTable();
   await createSocialPlatformsTable();
-  await createFoundersTable();
+
+  //WC3 DB
   await createWarcraft3RacesTable();
+
+  //USERS
+  await createUserTable();
+
+  //DR UNIVERSITY
+  await createFoundersTable();
   await createFounderWarcraft3RacesTable();
   await createFounderSocialLinksTable();
 
-  await seedWarcraft3Races();
+  //NEWS
+  await createArticleTypesTable();
+  await createArticlesTable();
+  await createArticleSocialLinksTable();
+
+  //SEEDS
   await seedSocialPlatforms();
+  await seedWarcraft3Races();
+  await seedArticleTypes();
   await createDefaultUser();
 }
 
@@ -121,6 +134,55 @@ async function createFounderSocialLinksTable() {
   `);
 }
 
+async function createArticleTypesTable() {
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS article_types (
+      id INT AUTO_INCREMENT,
+      name VARCHAR(100) NOT NULL UNIQUE,
+      createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+      CONSTRAINT PK_article_types PRIMARY KEY (id)
+    );
+  `);
+}
+
+async function createArticlesTable() {
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS articles (
+      id INT AUTO_INCREMENT,
+      title VARCHAR(255) NOT NULL,
+      slug VARCHAR(255) NOT NULL UNIQUE,
+      shortDescription TEXT NOT NULL,
+      content LONGTEXT NOT NULL,
+      imageId INT NOT NULL,
+      typeId INT NOT NULL,
+
+      createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+      CONSTRAINT PK_articles PRIMARY KEY (id),
+      CONSTRAINT FK_articles_image FOREIGN KEY (imageId) REFERENCES images(id) ON DELETE CASCADE,
+      CONSTRAINT FK_articles_type FOREIGN KEY (typeId) REFERENCES article_types(id) ON DELETE CASCADE
+    );
+  `);
+}
+
+async function createArticleSocialLinksTable() {
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS article_social_links (
+      id INT AUTO_INCREMENT,
+      articleId INT NOT NULL,
+      platformId INT NOT NULL,
+      url VARCHAR(255) NOT NULL,
+      text VARCHAR(255),
+
+      createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      CONSTRAINT PK_article_social_links PRIMARY KEY (id),
+      CONSTRAINT FK_article_social_links_article FOREIGN KEY (articleId) REFERENCES articles(id) ON DELETE CASCADE,
+      CONSTRAINT FK_article_social_links_platform FOREIGN KEY (platformId) REFERENCES social_platforms(id) ON DELETE CASCADE
+    );
+  `);
+}
+
 async function seedSocialPlatforms() {
   const platforms = ['tiktok', 'youtube', 'liquipedia', 'soop', 'twitch', 'instagram', 'twitter', 'reddit', 'w3champions'];
   const values = platforms.map(() => '(?)').join(', ');
@@ -133,6 +195,13 @@ async function seedWarcraft3Races() {
   const values = races.map(() => '(?)').join(', ');
   const sql = `INSERT IGNORE INTO wc3_races (name) VALUES ${values};`;
   await pool.query(sql, races);
+}
+
+async function seedArticleTypes() {
+  const types = ['DR University', 'Other'];
+  const values = types.map(() => '(?)').join(', ');
+  const sql = `INSERT IGNORE INTO article_types (name) VALUES ${values};`;
+  await pool.query(sql, types);
 }
 
 async function createDefaultUser() {

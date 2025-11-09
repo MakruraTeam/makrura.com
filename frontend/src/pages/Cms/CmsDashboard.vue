@@ -3,8 +3,8 @@ const Links = [
   { title: 'Add User', to: '/cms/add-user', location: 'user' },
   { title: 'Manage Users', to: '/cms/manage-users', location: 'user' },
 
-  { title: 'Add News Post', to: '/cms/add-blog-post', location: 'news' },
-  { title: 'Manage News Posts', to: '/cms/manage-blog-posts', location: 'news' },
+  { title: 'Add Article', to: '/cms/add-article', location: 'news' },
+  { title: 'Manage Articles', to: '/cms/manage-articles', location: 'news' },
 
   { title: 'Add Founders', to: '/cms/add-founders', location: 'dr-university' },
   { title: 'Manage Founders', to: '/cms/manage-founders', location: 'dr-university' },

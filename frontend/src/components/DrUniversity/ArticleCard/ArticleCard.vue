@@ -13,18 +13,17 @@ import redditIcon from '@/assets/imgs/reddit.png';
 import w3championsIcon from '@/assets/imgs/w3c.png';
 import { useRouter } from 'vue-router';
 
-defineProps<ArticleCardProps>();
+const props = defineProps<ArticleCardProps>();
 
 const router = useRouter();
 
 const goToArticle = () => {
-  router.push({ name: 'news-article', params: { slug: 'example-slug' } });
+  router.push({ name: 'news-article', params: { slug: props.slug } });
 };
 </script>
 
 <template>
   <v-card class="blog-card d-flex flex-column flex-md-row pa-4 rounded-xl elevation-3 ga-4 align-start justify-space-between" max-width="950">
-    <!-- LEFT SECTION -->
     <div class="left-section">
       <v-img :src="image" class="rounded-lg mb-4" aspect-ratio="5/3" width="100%" cover />
 
@@ -61,7 +60,7 @@ const goToArticle = () => {
           {{ title }}
         </h2>
         <p class="text-body-2 mb-6 text-center text-md-start">
-          {{ text }}
+          {{ shortDescription }}
         </p>
       </div>
       <div class="d-flex justify-center justify-md-start">

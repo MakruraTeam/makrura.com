@@ -22,6 +22,8 @@ const blogs = Array.from({ length: 100 }).map((_, idx) => ({
   image: BlogImage,
 }));
 
+const slug = 'test-slug';
+
 const currentPage = ref(1);
 const itemsPerPage = 5;
 
@@ -36,7 +38,7 @@ const paginatedBlogs = computed(() => {
 <template>
   <v-container class="py-6 d-flex flex-column align-center ga-4">
     <div v-for="(blog, index) in paginatedBlogs" :key="index" class="w-100 d-flex justify-center">
-      <ArticleCard :title="blog.title" :text="blog.text" :links="blog.links" :image="blog.image" />
+      <ArticleCard :title="blog.title" :shortDescription="blog.text" :links="blog.links" :image="blog.image" :slug="slug" />
     </div>
 
     <div class="w-100 d-flex justify-center mt-6">

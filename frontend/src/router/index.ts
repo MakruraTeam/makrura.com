@@ -14,6 +14,7 @@ import PalaRiffleUniversity from '@/pages/PrUniversity/PalaRiffleUniversity.vue'
 import EditFounder from '@/pages/Cms/DrUniversity/EditFounder.vue';
 import DrUniversityHome from '@/pages/DrUniversity/DrUniversityHome.vue';
 import ArticlePage from '@/pages/News/ArticlePage.vue';
+import AddArticle from '@/pages/Cms/News/AddArticle.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -104,18 +105,18 @@ const routes: Array<RouteRecordRaw> = [
         component: PageInDevelopment,
       },
       {
-        path: 'add-blog-post',
-        name: 'cms-add-blog-post',
+        path: 'add-article',
+        name: 'cms-add-article',
+        component: AddArticle,
+      },
+      {
+        path: 'manage-articles',
+        name: 'cms-manage-articles',
         component: PageInDevelopment,
       },
       {
-        path: 'manage-blog-posts',
-        name: 'cms-manage-blog-posts',
-        component: PageInDevelopment,
-      },
-      {
-        path: 'edit-blog-post/:id',
-        name: 'cms-edit-blog-post',
+        path: 'edit-article/:id',
+        name: 'cms-edit-article',
         component: PageInDevelopment,
       },
       {

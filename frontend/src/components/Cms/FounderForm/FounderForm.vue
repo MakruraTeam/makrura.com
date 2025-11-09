@@ -2,9 +2,12 @@
 import { ref, onMounted, watch } from 'vue';
 import RichTextEditor from '@/components/RichTextEditor/RichTextEditor.vue';
 import ImageCropper from '@/components/ImageCropper/ImageCropper.vue';
-import { getSocialPlatforms, getWc3Races, uploadImage } from '@/services/drUniversity/founders/founder.service';
-import type { Founder, SocialPlatform, Wc3Races } from '@/services/drUniversity/founders/founder.model';
+import type { Founder } from '@/services/drUniversity/founders/founder.model';
 import { FounderCardProps } from '@/components/DrUniversity/FounderCard/FounderCard.model';
+import { Wc3Races } from '@/services/wc3/wc3.model';
+import { SocialPlatform } from '@/services/common/common.model';
+import { getWc3Races } from '@/services/wc3/wc3.service';
+import { getSocialPlatforms, uploadImage } from '@/services/common/common.service';
 
 interface Props {
   initialData?: FounderCardProps;

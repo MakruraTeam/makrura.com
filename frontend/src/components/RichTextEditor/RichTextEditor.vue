@@ -22,7 +22,7 @@ onMounted(() => {
         [{ header: [1, 2, 3, false] }],
         [{ list: 'ordered' }, { list: 'bullet' }],
         [{ indent: '-1' }, { indent: '+1' }],
-        ['link', 'blockquote'],
+        ['link', 'blockquote', 'image'],
       ],
     },
   });
