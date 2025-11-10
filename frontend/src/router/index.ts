@@ -15,6 +15,9 @@ import EditFounder from '@/pages/Cms/DrUniversity/EditFounder.vue';
 import DrUniversityHome from '@/pages/DrUniversity/DrUniversityHome.vue';
 import ArticlePage from '@/pages/News/ArticlePage.vue';
 import AddArticle from '@/pages/Cms/News/AddArticle.vue';
+import NewsPage from '@/pages/News/NewsPage.vue';
+import ManageArticle from '@/pages/Cms/News/ManageArticle.vue';
+import EditArticle from '@/pages/Cms/News/EditArticle.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -25,6 +28,11 @@ const routes: Array<RouteRecordRaw> = [
     path: '/article/:slug',
     name: 'news-article',
     component: ArticlePage,
+  },
+  {
+    path: '/news',
+    name: 'news',
+    component: NewsPage,
   },
   {
     path: '/dru',
@@ -112,12 +120,12 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: 'manage-articles',
         name: 'cms-manage-articles',
-        component: PageInDevelopment,
+        component: ManageArticle,
       },
       {
         path: 'edit-article/:id',
         name: 'cms-edit-article',
-        component: PageInDevelopment,
+        component: EditArticle,
       },
       {
         path: 'add-founders',

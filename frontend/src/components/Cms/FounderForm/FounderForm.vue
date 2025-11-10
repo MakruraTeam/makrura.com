@@ -121,7 +121,7 @@ async function handleSubmit() {
 
     <v-select v-model="selectedRaces" :items="races" item-title="name" item-value="id" label="Races" multiple chips outlined />
 
-    <ImageCropper v-model="image" class="my-4" label="Founder Image" @change="onImageSelected" />
+    <ImageCropper v-model="image" class="my-4" label="Founder Image" @change="onImageSelected" :aspectRatio="1" />
 
     <RichTextEditor v-model="contribution" label="Contribution" />
 

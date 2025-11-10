@@ -1,3 +1,5 @@
+import { ArticleLink } from '@/services/news/article.model';
+
 export enum Platform {
   'TIKTOK' = 'tiktok',
   'YOUTUBE' = 'youtube',
@@ -15,5 +17,6 @@ export interface ArticleCardProps {
   shortDescription: string;
   slug: string;
   image: string;
-  links: { link: string; platform: Platform; description: string }[];
+  links: ArticleLink[];
+  createdAt: string;
 }

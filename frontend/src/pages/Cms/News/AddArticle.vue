@@ -1,18 +1,20 @@
 <script setup lang="ts">
 import { ref } from 'vue';
+import { createArticle } from '@/services/news/article.service';
+import type { Article, CreateArticleRequest } from '@/services/news/article.model';
 import ArticleForm from '@/components/Cms/ArticleForm/ArticleForm.vue';
 
 const loading = ref(false);
 const success = ref(false);
 const errorMessage = ref('');
 
-async function handleCreateArticle(payload: any) {
+async function handleCreateArticle(payload: CreateArticleRequest) {
   loading.value = true;
   success.value = false;
   errorMessage.value = '';
 
   try {
-    console.log('Article form payload:', payload);
+    await createArticle(payload);
     success.value = true;
   } catch (err: any) {
     console.error(err);
@@ -34,7 +36,7 @@ async function handleCreateArticle(payload: any) {
         {{ errorMessage }}
       </v-alert>
 
-      <v-alert v-if="success" type="success" variant="tonal" class="mt-4 text-center"> Article added successfully. </v-alert>
+      <v-alert v-if="success" type="success" variant="tonal" class="mt-4 text-center"> Article created successfully. </v-alert>
     </v-card>
   </v-container>
 </template>

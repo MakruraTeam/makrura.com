@@ -53,9 +53,23 @@ const goToArticle = () => {
       </div>
     </div>
 
-    <!-- RIGHT SECTION -->
-    <div class="right-section">
+    <div class="right-section d-flex flex-column justify-space-between">
       <div>
+        <div class="created-at text-caption text-medium-emphasis text-right mb-2">
+          {{
+            new Date(createdAt)
+              .toLocaleString(undefined, {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false,
+              })
+              .replace(',', '')
+          }}
+        </div>
+
         <h2 class="text-h5 font-weight-medium mb-3 text-center text-md-start">
           {{ title }}
         </h2>
@@ -63,6 +77,7 @@ const goToArticle = () => {
           {{ shortDescription }}
         </p>
       </div>
+
       <div class="d-flex justify-center justify-md-start">
         <v-btn color="primary" variant="flat" class="mt-2" @click="goToArticle">Read More</v-btn>
       </div>
@@ -80,7 +95,6 @@ const goToArticle = () => {
   width: 100%;
 }
 
-/* Apply desktop layout widths */
 @media (min-width: 960px) {
   .left-section {
     width: 35%;
@@ -93,5 +107,10 @@ const goToArticle = () => {
 
 :deep(.v-img) {
   object-fit: cover;
+}
+
+.created-at {
+  font-size: 0.85rem;
+  color: var(--v-theme-on-surface-variant);
 }
 </style>
