@@ -133,4 +133,12 @@ const safeContribution = computed(() => DOMPurify.sanitize(props.contribution ||
 .social-icon-img:hover {
   opacity: 0.7;
 }
+
+:deep(.v-card-text img) {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  margin: 0.5rem 0;
+}
 </style>

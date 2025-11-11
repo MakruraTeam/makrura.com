@@ -2,25 +2,35 @@ import { BACKEND_HOST, defaultDelete, defaultGet, defaultPatch, defaultPost } fr
 import { Founder } from './founder.model';
 import { FounderCardProps } from '@/components/DrUniversity/FounderCard/FounderCard.model';
 
+function resolveImageUrlsInContent(content?: string): string {
+  if (!content) return '';
+  return content.replace(/src=["']\/api\/common\/images\//g, `src="${BACKEND_HOST}/api/common/images/`);
+}
+
+function withFullImageUrl<T extends { image?: string | null }>(founder: T) {
+  return {
+    ...founder,
+    image: founder.image ? `${BACKEND_HOST}${founder.image}` : null,
+  };
+}
+
 export async function createFounder(founder: Founder) {
   return defaultPost<{ message: string; founder: Founder }>('/dr-university/founders', founder, true);
 }
 
 export async function getAllFounders() {
   const data = await defaultGet<FounderCardProps[]>('/dr-university/founders', false);
-
   return data.map((f) => ({
-    ...f,
-    image: `${BACKEND_HOST}${f.image}`,
+    ...withFullImageUrl(f),
+    contribution: resolveImageUrlsInContent(f.contribution),
   }));
 }
 
 export async function getFounderById(id: number) {
   const data = await defaultGet<FounderCardProps>(`/dr-university/founders/${id}`, false);
-
   return {
-    ...data,
-    image: `${BACKEND_HOST}${data.image}`,
+    ...withFullImageUrl(data),
+    contribution: resolveImageUrlsInContent(data.contribution),
   };
 }
 

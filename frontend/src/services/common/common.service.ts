@@ -1,4 +1,4 @@
-import { defaultGet, defaultPost } from '../api';
+import { BACKEND_HOST, defaultGet, defaultPost } from '../api';
 import { SocialPlatform, UploadedImage } from './common.model';
 
 export async function getSocialPlatforms() {
@@ -9,5 +9,11 @@ export async function getSocialPlatforms() {
 export async function uploadImage(file: File) {
   const formData = new FormData();
   formData.append('image', file);
-  return defaultPost<UploadedImage>('/common/images', formData, true);
+
+  const res = await defaultPost<{ imageId: number }>('/common/images', formData, true);
+
+  return {
+    imageId: res.imageId,
+    url: `${BACKEND_HOST}/common/images/${res.imageId}`,
+  };
 }

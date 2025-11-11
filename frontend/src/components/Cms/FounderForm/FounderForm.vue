@@ -8,6 +8,7 @@ import { Wc3Races } from '@/services/wc3/wc3.model';
 import { SocialPlatform } from '@/services/common/common.model';
 import { getWc3Races } from '@/services/wc3/wc3.service';
 import { getSocialPlatforms, uploadImage } from '@/services/common/common.service';
+import { compressImage } from '@/utils/image.util';
 
 interface Props {
   initialData?: FounderCardProps;
@@ -20,6 +21,8 @@ const props = defineProps<Props>();
 const name = ref('');
 const role = ref('');
 const contribution = ref('');
+const embeddedImages = ref<File[]>([]);
+
 const image = ref<string | null>(null);
 const imageFile = ref<File | null>(null);
 const selectedRaces = ref<number[]>([]);
@@ -86,10 +89,30 @@ async function handleSubmit() {
     return;
   }
 
+  let processedContribution = contribution.value;
+
+  const base64Matches = [...processedContribution.matchAll(/<img[^>]+src=["'](data:[^"']+)["'][^>]*>/gi)];
+
+  for (const match of base64Matches) {
+    const fullTag = match[0];
+    const base64Data = match[1];
+
+    const response = await fetch(base64Data);
+    const blob = await response.blob();
+    const file = new File([blob], `embedded-${Date.now()}.png`, { type: blob.type });
+
+    const compressed = await compressImage(file, 1000, 0.8);
+    const uploadRes = await uploadImage(compressed);
+    const newUrl = `/api/common/images/${uploadRes.imageId}`;
+
+    const updatedTag = fullTag.replace(base64Data, newUrl);
+    processedContribution = processedContribution.replace(fullTag, updatedTag);
+  }
+
   const payload: Founder = {
     name: name.value,
     role: role.value,
-    contribution: contribution.value,
+    contribution: processedContribution,
     races: selectedRaces.value,
     socialLinks: socialPlatforms.value
       .filter((p) => socialLinks.value[p.name])
@@ -100,13 +123,15 @@ async function handleSubmit() {
   };
 
   if (imageFile.value) {
-    const imgRes = await uploadImage(imageFile.value);
+    const compressed = await compressImage(imageFile.value, 1000, 0.8);
+    const imgRes = await uploadImage(compressed);
     payload.imageId = imgRes.imageId;
   }
 
   try {
     await props.onSubmit(payload);
   } catch (err: any) {
+    console.error(err);
     errorMessage.value = err?.message || 'Failed to save founder.';
   }
 }
@@ -123,7 +148,7 @@ async function handleSubmit() {
 
     <ImageCropper v-model="image" class="my-4" label="Founder Image" @change="onImageSelected" :aspectRatio="1" />
 
-    <RichTextEditor v-model="contribution" label="Contribution" />
+    <RichTextEditor v-model="contribution" v-model:embeddedImages="embeddedImages" label="Contribution" />
 
     <div class="text-h6 mb-2">Social Links</div>
     <v-row>

@@ -8,22 +8,29 @@ interface Props {
 }
 
 const props = defineProps<Props>();
-const emit = defineEmits(['update:modelValue']);
+const emit = defineEmits(['update:modelValue', 'update:embeddedImages']);
 
 const editor = ref<HTMLDivElement | null>(null);
 let quill: Quill | null = null;
+
+const embeddedImages = ref<File[]>([]);
 
 onMounted(() => {
   quill = new Quill(editor.value as HTMLDivElement, {
     theme: 'snow',
     modules: {
-      toolbar: [
-        ['bold', 'italic', 'underline', 'strike'],
-        [{ header: [1, 2, 3, false] }],
-        [{ list: 'ordered' }, { list: 'bullet' }],
-        [{ indent: '-1' }, { indent: '+1' }],
-        ['link', 'blockquote', 'image'],
-      ],
+      toolbar: {
+        container: [
+          ['bold', 'italic', 'underline', 'strike'],
+          [{ header: [1, 2, 3, false] }],
+          [{ list: 'ordered' }, { list: 'bullet' }],
+          [{ indent: '-1' }, { indent: '+1' }],
+          ['link', 'blockquote', 'image'],
+        ],
+        handlers: {
+          image: imageHandler,
+        },
+      },
     },
   });
 
@@ -36,10 +43,46 @@ onMounted(() => {
   }
 
   quill.on('text-change', () => {
-    const html = quill!.root.innerHTML;
-    emit('update:modelValue', html);
+    emit('update:modelValue', quill!.root.innerHTML);
   });
 });
+
+function imageHandler(this: any) {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'image/*';
+  input.click();
+
+  input.onchange = async () => {
+    const file = input.files?.[0];
+    if (!file) return;
+
+    const placeholderId = `image-${Date.now()}-${Math.random().toString(36).substring(2, 8)}`;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const base64 = e.target?.result as string;
+      const range = quill!.getSelection(true);
+      quill!.insertEmbed(range.index, 'image', base64);
+      quill!.setSelection(range.index + 1);
+
+      requestAnimationFrame(() => {
+        const editorEl = quill!.root as HTMLElement;
+        const imgs = editorEl.querySelectorAll('img[src^="data:"]');
+        const lastImg = imgs[imgs.length - 1];
+        if (lastImg) {
+          lastImg.setAttribute('data-temp-id', placeholderId);
+
+          emit('update:modelValue', editorEl.innerHTML);
+        }
+      });
+
+      embeddedImages.value.push(Object.assign(file, { __placeholderId: placeholderId }));
+      emit('update:embeddedImages', embeddedImages.value);
+    };
+    reader.readAsDataURL(file);
+  };
+}
 
 watch(
   () => props.modelValue,
@@ -67,7 +110,6 @@ watch(
   border-radius: 8px;
 }
 
-/* 🪄 Use :deep() to style Quill internals */
 :deep(.ql-toolbar) {
   background-color: #f5f5f5;
   border-radius: 8px 8px 0 0;
@@ -106,24 +148,5 @@ watch(
   background: #fff !important;
   color: #000 !important;
   border: 1px solid #ccc !important;
-}
-
-:deep(.v-theme--dark .ql-toolbar) {
-  background-color: #2c2c2c !important;
-}
-
-:deep(.v-theme--dark .ql-toolbar .ql-stroke),
-:deep(.v-theme--dark .ql-toolbar .ql-fill) {
-  stroke: #fff !important;
-  fill: #fff !important;
-}
-
-:deep(.v-theme--dark .ql-editor) {
-  background-color: #121212 !important;
-  color: #fff !important;
-}
-
-:deep(.v-theme--dark .ql-editor a) {
-  color: #90caf9 !important;
 }
 </style>

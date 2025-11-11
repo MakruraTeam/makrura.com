@@ -27,6 +27,7 @@ export async function setupDatabase() {
   await seedWarcraft3Races();
   await seedArticleTypes();
   await createDefaultUser();
+  await createCleanupEvent();
 }
 
 async function createImagesTable() {
@@ -222,4 +223,34 @@ async function createDefaultUser() {
   );
 
   console.log('Default admin user created.');
+}
+
+async function createCleanupEvent() {
+  try {
+    const [rows] = await pool.query(`
+      SELECT EVENT_NAME
+      FROM information_schema.EVENTS
+      WHERE EVENT_SCHEMA = DATABASE()
+      AND EVENT_NAME = 'cleanup_unused_images';
+    `);
+
+    if (rows.length === 0) {
+      console.log('🧹 Creating cleanup_unused_images event...');
+
+      await pool.query(`
+        CREATE EVENT cleanup_unused_images
+        ON SCHEDULE EVERY 1 DAY
+        DO
+          DELETE FROM images
+          WHERE id NOT IN (
+            SELECT imageId FROM articles WHERE imageId IS NOT NULL
+            UNION
+            SELECT imageId FROM founders WHERE imageId IS NOT NULL
+          )
+          AND createdAt < NOW() - INTERVAL 1 DAY;
+      `);
+    }
+  } catch (err) {
+    console.error('Error creating cleanup event:', err);
+  }
 }

@@ -267,13 +267,14 @@ export async function updateArticle(req, res) {
 
     await connection.beginTransaction();
 
-    const [articles] = await connection.query(`SELECT imageId FROM articles WHERE id = ?`, [id]);
+    const [articles] = await connection.query(`SELECT imageId, content FROM articles WHERE id = ?`, [id]);
     if (articles.length === 0) {
       await connection.rollback();
       return res.status(404).json({ error: 'Article not found' });
     }
 
     const oldImageId = articles[0].imageId;
+    const oldContent = articles[0].content;
 
     await connection.query(
       `
@@ -285,7 +286,6 @@ export async function updateArticle(req, res) {
     );
 
     await connection.query(`DELETE FROM article_social_links WHERE articleId = ?`, [id]);
-
     if (Array.isArray(links) && links.length > 0) {
       const validLinks = links.filter((l) => l.id && l.url);
       if (validLinks.length > 0) {
@@ -295,6 +295,14 @@ export async function updateArticle(req, res) {
     }
 
     await connection.commit();
+
+    const newImageIds = Array.from(content.matchAll(/\/api\/common\/images\/(\d+)/g)).map((m) => parseInt(m[1], 10));
+    const oldImageIds = Array.from(oldContent.matchAll(/\/api\/common\/images\/(\d+)/g)).map((m) => parseInt(m[1], 10));
+
+    const unusedImageIds = oldImageIds.filter((oldId) => !newImageIds.includes(oldId));
+    for (const imgId of unusedImageIds) {
+      await pool.query(`DELETE FROM images WHERE id = ?`, [imgId]);
+    }
 
     if (oldImageId && oldImageId !== imageId) {
       await pool.query(`DELETE FROM images WHERE id = ?`, [oldImageId]);

@@ -6,13 +6,11 @@ import { getSocialPlatforms, uploadImage } from '@/services/common/common.servic
 import { getArticleTypes } from '@/services/news/article.service';
 import type { EditableArticle, CreateArticleRequest, ArticleTypes } from '@/services/news/article.model';
 import type { SocialPlatform } from '@/services/common/common.model';
+import { compressImage } from '@/utils/image.util';
 
 interface Props {
-  /** Prefilled article data for editing */
   initialData?: EditableArticle;
-  /** Form submit handler */
   onSubmit: (payload: CreateArticleRequest) => Promise<void>;
-  /** Loading state for submit button */
   loading?: boolean;
 }
 
@@ -23,6 +21,7 @@ const title = ref('');
 const slug = ref('');
 const shortDescription = ref('');
 const content = ref('');
+const embeddedImages = ref<File[]>([]);
 const image = ref<string | null>(null);
 const imageFile = ref<File | null>(null);
 const selectedType = ref<number | null>(null);
@@ -95,7 +94,8 @@ async function handleSubmit() {
   let imageId: number | null = null;
 
   if (imageFile.value) {
-    const imgRes = await uploadImage(imageFile.value);
+    const compressed = await compressImage(imageFile.value, 1000, 0.8);
+    const imgRes = await uploadImage(compressed);
     imageId = imgRes.imageId;
   } else if (props.initialData?.imageId) {
     imageId = props.initialData.imageId;
@@ -104,11 +104,31 @@ async function handleSubmit() {
     return;
   }
 
+  let processedContent = content.value;
+
+  const base64Matches = [...processedContent.matchAll(/<img[^>]+src=["'](data:[^"']+)["'][^>]*>/gi)];
+
+  for (const match of base64Matches) {
+    const fullTag = match[0];
+    const base64Data = match[1];
+
+    const response = await fetch(base64Data);
+    const blob = await response.blob();
+    const file = new File([blob], `embedded-${Date.now()}.png`, { type: blob.type });
+
+    const compressed = await compressImage(file, 1000, 0.8);
+    const uploadRes = await uploadImage(compressed);
+    const newUrl = `/api/common/images/${uploadRes.imageId}`;
+
+    const updatedTag = fullTag.replace(base64Data, newUrl);
+    processedContent = processedContent.replace(fullTag, updatedTag);
+  }
+
   const payload: CreateArticleRequest = {
     title: title.value,
     slug: slug.value,
     shortDescription: shortDescription.value,
-    content: content.value,
+    content: processedContent,
     imageId,
     typeId: selectedType.value,
     links: links.value
@@ -141,7 +161,7 @@ async function handleSubmit() {
 
     <ImageCropper v-model="image" class="my-4" label="Article Image" @change="onImageSelected" :aspectRatio="5 / 3" />
 
-    <RichTextEditor v-model="content" label="Content" />
+    <RichTextEditor v-model="content" label="Content" v-model:embeddedImages="embeddedImages" />
 
     <div class="text-h6 mt-6 mb-3">Social Links</div>
 

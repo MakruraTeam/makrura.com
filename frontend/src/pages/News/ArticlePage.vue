@@ -76,3 +76,11 @@ const safeContribution = computed(() => DOMPurify.sanitize(article.value?.conten
     <p v-else-if="errorMessage" class="text-error">{{ errorMessage }}</p>
   </v-container>
 </template>
+<style scoped>
+:deep(.v-card .mb-6 img) {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+</style>

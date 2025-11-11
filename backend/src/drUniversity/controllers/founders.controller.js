@@ -224,10 +224,7 @@ export async function patchFounderById(req, res) {
 
     const oldFounder = founderRows[0];
     const oldImageId = oldFounder.imageId;
-
-    if (imageId && oldImageId && imageId !== oldImageId) {
-      await connection.query(`DELETE FROM images WHERE id = ?`, [oldImageId]);
-    }
+    const oldContribution = oldFounder.contribution || '';
 
     await connection.query(
       `
@@ -260,6 +257,18 @@ export async function patchFounderById(req, res) {
     }
 
     await connection.commit();
+
+    const newImageIds = Array.from((contribution || '').matchAll(/\/api\/common\/images\/(\d+)/g)).map((m) => parseInt(m[1], 10));
+    const oldImageIds = Array.from((oldContribution || '').matchAll(/\/api\/common\/images\/(\d+)/g)).map((m) => parseInt(m[1], 10));
+
+    const removedImageIds = oldImageIds.filter((oldId) => !newImageIds.includes(oldId));
+    for (const imgId of removedImageIds) {
+      await pool.query(`DELETE FROM images WHERE id = ?`, [imgId]);
+    }
+
+    if (oldImageId && imageId && oldImageId !== imageId) {
+      await pool.query(`DELETE FROM images WHERE id = ?`, [oldImageId]);
+    }
 
     const [founderResult] = await connection.query(
       `
