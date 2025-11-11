@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
-import { getArticlesByType } from '@/services/news/article.service';
+import { getAllArticles, getArticlesByType } from '@/services/news/article.service';
 import { ArticleListItem } from '@/services/news/article.model';
 import ArticleCard from '@/components/ArticleCard/ArticleCard.vue';
 
@@ -20,11 +20,11 @@ const paginatedArticles = computed(() => {
 async function fetchArticles() {
   try {
     loading.value = true;
-    const res = await getArticlesByType('DR University');
+    const res = await getAllArticles();
     articles.value = res;
   } catch (err) {
     console.error('Error loading articles:', err);
-    errorMessage.value = 'Failed to load DR University articles.';
+    errorMessage.value = 'Failed to load articles.';
   } finally {
     loading.value = false;
   }
@@ -37,6 +37,7 @@ onMounted(() => {
 
 <template>
   <v-container class="py-6 d-flex flex-column align-center ga-4">
+    <div class="text-h5 text-md-h4 mb-4">Ape News Journal</div>
     <v-progress-circular v-if="loading" indeterminate color="primary" class="d-flex mx-auto my-6" />
 
     <template v-else-if="errorMessage">

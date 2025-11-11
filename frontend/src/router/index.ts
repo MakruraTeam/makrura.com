@@ -12,11 +12,27 @@ import AddFounder from '@/pages/Cms/DrUniversity/AddFounder.vue';
 import ManageFounders from '@/pages/Cms/DrUniversity/ManageFounders.vue';
 import PalaRiffleUniversity from '@/pages/PrUniversity/PalaRiffleUniversity.vue';
 import EditFounder from '@/pages/Cms/DrUniversity/EditFounder.vue';
+import DrUniversityHome from '@/pages/DrUniversity/DrUniversityHome.vue';
+import ArticlePage from '@/pages/News/ArticlePage.vue';
+import AddArticle from '@/pages/Cms/News/AddArticle.vue';
+import NewsPage from '@/pages/News/NewsPage.vue';
+import ManageArticle from '@/pages/Cms/News/ManageArticle.vue';
+import EditArticle from '@/pages/Cms/News/EditArticle.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
     redirect: '/dru',
+  },
+  {
+    path: '/article/:slug',
+    name: 'news-article',
+    component: ArticlePage,
+  },
+  {
+    path: '/news',
+    name: 'news',
+    component: NewsPage,
   },
   {
     path: '/dru',
@@ -26,8 +42,9 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: '',
         name: 'dr-university-home',
-        component: PageInDevelopment,
+        component: DrUniversityHome,
       },
+
       {
         path: 'table',
         name: 'dr-university-table',
@@ -96,14 +113,19 @@ const routes: Array<RouteRecordRaw> = [
         component: PageInDevelopment,
       },
       {
-        path: 'add-blog-post',
-        name: 'cms-add-blog-post',
-        component: PageInDevelopment,
+        path: 'add-article',
+        name: 'cms-add-article',
+        component: AddArticle,
       },
       {
-        path: 'manage-blog-posts',
-        name: 'cms-manage-blog-posts',
-        component: PageInDevelopment,
+        path: 'manage-articles',
+        name: 'cms-manage-articles',
+        component: ManageArticle,
+      },
+      {
+        path: 'edit-article/:id',
+        name: 'cms-edit-article',
+        component: EditArticle,
       },
       {
         path: 'add-founders',

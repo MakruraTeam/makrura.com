@@ -6,6 +6,7 @@ import 'vue-advanced-cropper/dist/style.css';
 const props = defineProps<{
   modelValue: string | null;
   label?: string;
+  aspectRatio?: number; // 👈 add this (default will be 1 for square)
 }>();
 
 const emit = defineEmits(['update:modelValue', 'change']);
@@ -79,18 +80,34 @@ const selectNewImage = () => {
     <v-img
       v-if="cropped"
       :src="cropped"
-      width="140"
-      height="140"
-      rounded="circle"
+      :width="props.aspectRatio === 1 ? '180' : '300'"
+      :height="180"
+      :rounded="props.aspectRatio === 1 ? 'circle' : false"
       class="mx-auto cursor-pointer elevation-2"
       @click="selectNewImage"
+      cover
     />
 
-    <v-avatar v-else size="140" class="mx-auto cursor-pointer elevation-2" color="grey-lighten-3" @click="selectNewImage">
+    <v-avatar
+      v-else-if="props.aspectRatio === 1"
+      size="140"
+      class="mx-auto cursor-pointer elevation-2"
+      color="grey-lighten-3"
+      @click="selectNewImage"
+    >
       <v-icon size="48">mdi-camera</v-icon>
     </v-avatar>
 
-    <v-dialog v-model="dialog" max-width="700">
+    <div
+      v-else
+      class="mx-auto cursor-pointer elevation-2 d-flex align-center justify-center"
+      style="width: 300px; height: 180px; background-color: #f5f5f5; border: 1px dashed #ccc"
+      @click="selectNewImage"
+    >
+      <v-icon size="48" color="grey">mdi-camera</v-icon>
+    </div>
+
+    <v-dialog v-model="dialog" max-width="800">
       <v-card>
         <v-card-title class="text-h6 font-weight-medium">Crop Image</v-card-title>
         <v-card-text>
@@ -98,7 +115,7 @@ const selectNewImage = () => {
             <Cropper
               ref="cropperRef"
               :src="image"
-              :stencil-props="{ aspectRatio: 1 }"
+              :stencil-props="{ aspectRatio: props.aspectRatio || 1 }"
               class="border rounded-md overflow-hidden"
               style="width: 100%; height: 100%"
             />

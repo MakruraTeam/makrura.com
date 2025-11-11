@@ -3,6 +3,7 @@ import SaulDrCircle from '@/assets/imgs/saul-dr-circle.png';
 import MakruraLogo from '@/assets/imgs/makrura.png';
 import GamesLogo from '@/assets/imgs/games.png';
 import PalaRiffleLogo from '@/assets/imgs/paladin.png';
+import NewsLogo from '@/assets/imgs/news.webp';
 import { MainDrawerNavigationLink } from './MainNavbar.model';
 import { computed, Ref, ref, watch } from 'vue';
 import { useDisplay } from 'vuetify';
@@ -35,6 +36,13 @@ const navLinks: Ref<MainDrawerNavigationLink[]> = computed(() => [
     to: '/pru',
     customIcon: PalaRiffleLogo,
     alt: 'PR University Logo',
+    location: 'top',
+  },
+  {
+    title: 'Ape News',
+    to: '/news',
+    customIcon: NewsLogo,
+    alt: 'News Logo',
     location: 'top',
   },
   {
