@@ -65,7 +65,6 @@ export async function getMatchupTableById(req, res) {
     const table = tables[0];
 
     const cells = await getMatchupCells(table.id);
-
     const grouped = groupCellsByRow(cells);
 
     res.json({
@@ -121,6 +120,64 @@ export async function deleteMatchupTable(req, res) {
   } catch (err) {
     await connection.rollback();
     console.error('Error deleting matchup table:', err);
+    res.status(500).json({ error: 'Server error', details: err.message });
+  } finally {
+    connection.release();
+  }
+}
+
+export async function patchMatchupTableById(req, res) {
+  const { id } = req.params;
+  const { name, cells } = req.body;
+
+  if (!id) {
+    return res.status(400).json({ error: 'Matchup table ID is required' });
+  }
+
+  const connection = await pool.getConnection();
+
+  try {
+    await connection.beginTransaction();
+
+    const [rows] = await connection.query(`SELECT * FROM matchup_tables WHERE id = ?`, [id]);
+
+    if (rows.length === 0) {
+      await connection.rollback();
+      return res.status(404).json({ error: 'Matchup table not found' });
+    }
+
+    await connection.query(
+      `
+      UPDATE matchup_tables
+      SET name = COALESCE(?, name)
+      WHERE id = ?
+      `,
+      [name, id]
+    );
+
+    if (Array.isArray(cells)) {
+      await connection.query(`DELETE FROM matchup_cells WHERE tableId = ?`, [id]);
+
+      if (cells.length > 0) {
+        await insertMatchupCells(id, cells, connection);
+      }
+    }
+
+    await connection.commit();
+
+    const updatedCells = await getMatchupCells(id);
+    const grouped = groupCellsByRow(updatedCells);
+
+    res.json({
+      message: 'Matchup table updated successfully',
+      table: {
+        id: Number(id),
+        name: name || rows[0].name,
+        cells: grouped,
+      },
+    });
+  } catch (err) {
+    await connection.rollback();
     res.status(500).json({ error: 'Server error', details: err.message });
   } finally {
     connection.release();

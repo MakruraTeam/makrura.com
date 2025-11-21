@@ -20,7 +20,6 @@ async function loadMatchups() {
   try {
     matchups.value = await getAllMatchupTables();
   } catch (err: any) {
-    console.error(err);
     error.value = err?.message || 'Failed to load matchup tables.';
   } finally {
     loading.value = false;
@@ -45,7 +44,6 @@ async function confirmDelete() {
     selectedMatchup.value = null;
     await loadMatchups();
   } catch (err: any) {
-    console.error(err);
     error.value = err?.message || 'Failed to delete matchup table.';
     dialog.value = false;
   }
@@ -62,8 +60,7 @@ onMounted(loadMatchups);
 <template>
   <v-container class="fill-height d-flex align-center justify-center">
     <v-card max-width="600" class="w-100 pa-7">
-      <v-card-title class="text-h5 text-center mb-4">Manage Matchup Tables</v-card-title>
-
+      <v-card-title class="text-h5 text-center mb-4"> Manage Matchup Tables </v-card-title>
       <v-progress-circular v-if="loading" indeterminate color="primary" class="d-flex mx-auto my-6" />
 
       <div v-else-if="error" class="text-error text-center my-4">

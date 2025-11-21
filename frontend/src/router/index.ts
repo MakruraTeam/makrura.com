@@ -21,6 +21,7 @@ import EditArticle from '@/pages/Cms/News/EditArticle.vue';
 import AddMatchupTable from '@/pages/Cms/DrUniversity/AddMatchupTable.vue';
 import DrUniversityMatchups from '@/pages/DrUniversity/DrUniversityMatchups.vue';
 import ManageMatchups from '@/pages/Cms/DrUniversity/ManageMatchups.vue';
+import EditMatchupTable from '@/pages/Cms/DrUniversity/EditMatchupTable.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -153,6 +154,11 @@ const routes: Array<RouteRecordRaw> = [
         path: 'manage-matchup-tables',
         name: 'cms-manage-matchup-tables',
         component: ManageMatchups,
+      },
+      {
+        path: 'edit-matchup-table/:id',
+        name: 'cms-edit-matchup-table',
+        component: EditMatchupTable,
       },
     ],
   },

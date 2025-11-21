@@ -49,6 +49,7 @@ export async function getMatchupCells(tableId) {
       rr.name AS rowRaceName,
       cr.name AS colRaceName,
 
+      mcl.platformId,
       sp.name AS platform,
       mcl.url,
       mcl.text
@@ -82,8 +83,9 @@ export async function getMatchupCells(tableId) {
       });
     }
 
-    if (row.platform) {
+    if (row.platformId) {
       cellsMap.get(row.cellId).links.push({
+        platformId: row.platformId,
         platform: row.platform,
         url: row.url,
         text: row.text || null,

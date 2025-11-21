@@ -1,4 +1,4 @@
-import { defaultDelete, defaultGet, defaultPost } from '@/services/api';
+import { defaultDelete, defaultGet, defaultPatch, defaultPost } from '@/services/api';
 import { CreateMatchupTableDto, MatchupTableFull, MatchupTableSummary } from './matchups.model';
 
 export async function createMatchupTable(matchup: CreateMatchupTableDto) {
@@ -15,4 +15,8 @@ export async function getMatchupTableById(id: number) {
 
 export async function deleteMatchupTableById(id: number) {
   return defaultDelete<{ message: string }>(`/dr-university/matchups/${id}`, undefined, true);
+}
+
+export async function patchMatchupTableById(id: number, matchup: CreateMatchupTableDto) {
+  return defaultPatch<{ message: string; matchupTable: MatchupTableFull }>(`/dr-university/matchups/${id}`, matchup, true);
 }
