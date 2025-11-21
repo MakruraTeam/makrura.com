@@ -6,7 +6,7 @@ import type { Founder } from '@/services/drUniversity/founders/founder.model';
 import { FounderCardProps } from '@/components/DrUniversity/FounderCard/FounderCard.model';
 import { Wc3Races } from '@/services/wc3/wc3.model';
 import { SocialPlatform } from '@/services/common/common.model';
-import { getWc3Races } from '@/services/wc3/wc3.service';
+import { getClassicWc3Races } from '@/services/wc3/wc3.service';
 import { getSocialPlatforms, uploadImage } from '@/services/common/common.service';
 import { compressImage } from '@/utils/image.util';
 
@@ -53,7 +53,7 @@ function fillFormFromInitialData(data: FounderCardProps) {
 
 onMounted(async () => {
   try {
-    const [racesRes, socialRes] = await Promise.all([getWc3Races(), getSocialPlatforms()]);
+    const [racesRes, socialRes] = await Promise.all([getClassicWc3Races(), getSocialPlatforms()]);
     races.value = racesRes ?? [];
     socialPlatforms.value = socialRes ?? [];
 

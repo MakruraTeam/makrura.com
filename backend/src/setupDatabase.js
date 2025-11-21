@@ -17,6 +17,10 @@ export async function setupDatabase() {
   await createFounderWarcraft3RacesTable();
   await createFounderSocialLinksTable();
 
+  await createMatchupTablesTable();
+  await createMatchupCellsTable();
+  await createMatchupCellLinksTable();
+
   //NEWS
   await createArticleTypesTable();
   await createArticlesTable();
@@ -27,7 +31,6 @@ export async function setupDatabase() {
   await seedWarcraft3Races();
   await seedArticleTypes();
   await createDefaultUser();
-  await createCleanupEvent();
 }
 
 async function createImagesTable() {
@@ -184,6 +187,64 @@ async function createArticleSocialLinksTable() {
   `);
 }
 
+async function createMatchupTablesTable() {
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS matchup_tables (
+      id INT AUTO_INCREMENT,
+      name VARCHAR(255) NOT NULL,
+      createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+      CONSTRAINT PK_matchup_tables PRIMARY KEY (id)
+    );
+  `);
+}
+
+async function createMatchupCellsTable() {
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS matchup_cells (
+      id INT AUTO_INCREMENT,
+      tableId INT NOT NULL,
+      rowRaceId INT NOT NULL,
+      colRaceId INT NOT NULL,
+      createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+      CONSTRAINT PK_matchup_cells PRIMARY KEY (id),
+
+      CONSTRAINT UQ_matchup_cells UNIQUE (tableId, rowRaceId, colRaceId),
+
+      CONSTRAINT FK_matchup_cells_table 
+        FOREIGN KEY (tableId) REFERENCES matchup_tables(id) ON DELETE CASCADE,
+
+      CONSTRAINT FK_matchup_cells_row_race 
+        FOREIGN KEY (rowRaceId) REFERENCES wc3_races(id) ON DELETE CASCADE,
+
+      CONSTRAINT FK_matchup_cells_col_race 
+        FOREIGN KEY (colRaceId) REFERENCES wc3_races(id) ON DELETE CASCADE
+    );
+  `);
+}
+
+async function createMatchupCellLinksTable() {
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS matchup_cell_links (
+      id INT AUTO_INCREMENT,
+      cellId INT NOT NULL,
+      platformId INT NOT NULL,
+      url VARCHAR(255) NOT NULL,
+      text VARCHAR(255),
+      createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+      CONSTRAINT PK_matchup_cell_links PRIMARY KEY (id),
+
+      CONSTRAINT FK_matchup_cell_links_cell 
+        FOREIGN KEY (cellId) REFERENCES matchup_cells(id) ON DELETE CASCADE,
+
+      CONSTRAINT FK_matchup_cell_links_platform 
+        FOREIGN KEY (platformId) REFERENCES social_platforms(id) ON DELETE CASCADE
+    );
+  `);
+}
+
 async function seedSocialPlatforms() {
   const platforms = ['tiktok', 'youtube', 'liquipedia', 'soop', 'twitch', 'instagram', 'twitter', 'reddit', 'w3champions'];
   const values = platforms.map(() => '(?)').join(', ');
@@ -223,34 +284,4 @@ async function createDefaultUser() {
   );
 
   console.log('Default admin user created.');
-}
-
-async function createCleanupEvent() {
-  try {
-    const [rows] = await pool.query(`
-      SELECT EVENT_NAME
-      FROM information_schema.EVENTS
-      WHERE EVENT_SCHEMA = DATABASE()
-      AND EVENT_NAME = 'cleanup_unused_images';
-    `);
-
-    if (rows.length === 0) {
-      console.log('🧹 Creating cleanup_unused_images event...');
-
-      await pool.query(`
-        CREATE EVENT cleanup_unused_images
-        ON SCHEDULE EVERY 1 DAY
-        DO
-          DELETE FROM images
-          WHERE id NOT IN (
-            SELECT imageId FROM articles WHERE imageId IS NOT NULL
-            UNION
-            SELECT imageId FROM founders WHERE imageId IS NOT NULL
-          )
-          AND createdAt < NOW() - INTERVAL 1 DAY;
-      `);
-    }
-  } catch (err) {
-    console.error('Error creating cleanup event:', err);
-  }
 }

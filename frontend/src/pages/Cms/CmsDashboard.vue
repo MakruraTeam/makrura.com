@@ -8,6 +8,8 @@ const Links = [
 
   { title: 'Add Founders', to: '/cms/add-founders', location: 'dr-university' },
   { title: 'Manage Founders', to: '/cms/manage-founders', location: 'dr-university' },
+  { title: 'Add Matchup Table', to: '/cms/add-matchup-table', location: 'dr-university' },
+  { title: 'Manage Matchup Tables', to: '/cms/manage-matchup-tables', location: 'dr-university' },
 ];
 
 const userLinks = Links.filter((link) => link.location === 'user');

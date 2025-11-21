@@ -37,7 +37,7 @@ onMounted(() => {
 
 <template>
   <v-container class="py-6 d-flex flex-column align-center ga-4">
-    <div class="text-h5 text-md-h4 mb-4">Ape News Journal</div>
+    <div class="text-h5 text-md-h4 mb-4 d-flex align-center ga-2">Ape News Journal</div>
     <v-progress-circular v-if="loading" indeterminate color="primary" class="d-flex mx-auto my-6" />
 
     <template v-else-if="errorMessage">
