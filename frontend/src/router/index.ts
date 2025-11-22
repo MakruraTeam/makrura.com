@@ -18,6 +18,10 @@ import AddArticle from '@/pages/Cms/News/AddArticle.vue';
 import NewsPage from '@/pages/News/NewsPage.vue';
 import ManageArticle from '@/pages/Cms/News/ManageArticle.vue';
 import EditArticle from '@/pages/Cms/News/EditArticle.vue';
+import AddMatchupTable from '@/pages/Cms/DrUniversity/AddMatchupTable.vue';
+import DrUniversityMatchups from '@/pages/DrUniversity/DrUniversityMatchups.vue';
+import ManageMatchups from '@/pages/Cms/DrUniversity/ManageMatchups.vue';
+import EditMatchupTable from '@/pages/Cms/DrUniversity/EditMatchupTable.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -44,11 +48,10 @@ const routes: Array<RouteRecordRaw> = [
         name: 'dr-university-home',
         component: DrUniversityHome,
       },
-
       {
-        path: 'table',
-        name: 'dr-university-table',
-        component: PageInDevelopment,
+        path: 'matchups',
+        name: 'dr-university-matchups',
+        component: DrUniversityMatchups,
       },
       {
         path: 'founders',
@@ -141,6 +144,21 @@ const routes: Array<RouteRecordRaw> = [
         path: 'edit-founder/:id',
         name: 'cms-edit-founder',
         component: EditFounder,
+      },
+      {
+        path: 'add-matchup-table',
+        name: 'cms-add-matchup-table',
+        component: AddMatchupTable,
+      },
+      {
+        path: 'manage-matchup-tables',
+        name: 'cms-manage-matchup-tables',
+        component: ManageMatchups,
+      },
+      {
+        path: 'edit-matchup-table/:id',
+        name: 'cms-edit-matchup-table',
+        component: EditMatchupTable,
       },
     ],
   },
