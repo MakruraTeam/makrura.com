@@ -22,6 +22,8 @@ import AddMatchupTable from '@/pages/Cms/DrUniversity/AddMatchupTable.vue';
 import DrUniversityMatchups from '@/pages/DrUniversity/DrUniversityMatchups.vue';
 import ManageMatchups from '@/pages/Cms/DrUniversity/ManageMatchups.vue';
 import EditMatchupTable from '@/pages/Cms/DrUniversity/EditMatchupTable.vue';
+import DrUniversityPlayers from '@/pages/DrUniversity/DrUniversityPlayers.vue';
+import AddPlayer from '@/pages/Cms/DrUniversity/AddPlayer.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -61,7 +63,7 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: 'players',
         name: 'dr-university-players',
-        component: PageInDevelopment,
+        component: DrUniversityPlayers,
       },
       {
         path: ':pathMatch(.*)*',
@@ -159,6 +161,21 @@ const routes: Array<RouteRecordRaw> = [
         path: 'edit-matchup-table/:id',
         name: 'cms-edit-matchup-table',
         component: EditMatchupTable,
+      },
+      {
+        path: 'add-player',
+        name: 'cms-add-player',
+        component: AddPlayer,
+      },
+      {
+        path: 'manage-players',
+        name: 'cms-manage-players',
+        component: PageInDevelopment,
+      },
+      {
+        path: 'edit-player/:id',
+        name: 'cms-edit-player',
+        component: PageInDevelopment,
       },
     ],
   },
