@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
-import { getAllArticles, getArticlesByType } from '@/services/news/article.service';
+import { getAllArticles } from '@/services/news/article.service';
 import { ArticleListItem } from '@/services/news/article.model';
 import ArticleCard from '@/components/ArticleCard/ArticleCard.vue';
 
@@ -46,14 +46,7 @@ onMounted(() => {
 
     <template v-else>
       <div v-for="article in paginatedArticles" :key="article.id" class="w-100 d-flex justify-center">
-        <ArticleCard
-          :title="article.title"
-          :shortDescription="article.shortDescription"
-          :links="article.links"
-          :image="article.image"
-          :slug="article.slug"
-          :createdAt="article.createdAt"
-        />
+        <ArticleCard :title="article.title" :shortDescription="article.shortDescription" :links="article.links" :image="article.image" :slug="article.slug" :createdAt="article.createdAt" />
       </div>
 
       <div class="w-100 d-flex justify-center mt-6">

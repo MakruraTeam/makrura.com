@@ -1,5 +1,5 @@
 import { BACKEND_HOST, defaultGet, defaultPost } from '../api';
-import { SocialPlatform, UploadedImage } from './common.model';
+import { SocialPlatform } from './common.model';
 
 export async function getSocialPlatforms() {
   const res = await defaultGet<SocialPlatform[]>('/common/social-platforms', true);
