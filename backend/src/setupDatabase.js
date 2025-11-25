@@ -256,6 +256,8 @@ async function createDruPlayersTable() {
       name VARCHAR(120) NOT NULL,
       mmr INT,
       country VARCHAR(120),
+      role VARCHAR(255),
+      contribution TEXT,
 
       createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 

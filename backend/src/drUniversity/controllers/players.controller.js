@@ -4,7 +4,7 @@ import { buildPlayerRaceMap, buildPlayerSocialMap, buildPlayerCard } from '../he
 export async function getAllPlayers(req, res) {
   try {
     const [players] = await pool.query(`
-      SELECT id, name, mmr, country
+      SELECT id, name, mmr, country, role, contribution
       FROM dru_players
       ORDER BY createdAt ASC;
     `);
@@ -23,9 +23,7 @@ export async function getAllPlayers(req, res) {
 
     const result = players.map((p) => {
       const raceMap = buildPlayerRaceMap(races.filter((r) => r.playerId === p.id));
-
       const socialList = buildPlayerSocialMap(socials.filter((s) => s.playerId === p.id));
-
       return buildPlayerCard(p, raceMap, socialList);
     });
 
@@ -42,7 +40,7 @@ export async function getPlayerById(req, res) {
   try {
     const [playerRows] = await pool.query(
       `
-      SELECT id, name, mmr, country
+      SELECT id, name, mmr, country, role, contribution
       FROM dru_players
       WHERE id = ?;
     `,
@@ -88,7 +86,7 @@ export async function getPlayerById(req, res) {
 export async function createPlayer(req, res) {
   const connection = await pool.getConnection();
   try {
-    const { name, mmr, country, races, socialLinks } = req.body;
+    const { name, mmr, country, role, contribution, races, socialLinks } = req.body;
 
     if (!name) {
       return res.status(400).json({ error: 'Missing required fields: name' });
@@ -98,10 +96,10 @@ export async function createPlayer(req, res) {
 
     const [result] = await connection.query(
       `
-      INSERT INTO dru_players (name, mmr, country)
-      VALUES (?, ?, ?)
+      INSERT INTO dru_players (name, mmr, country, role, contribution)
+      VALUES (?, ?, ?, ?, ?)
     `,
-      [name, mmr || null, country || null]
+      [name, mmr || null, country || null, role || null, contribution || null]
     );
 
     const playerId = result.insertId;
@@ -149,7 +147,20 @@ export async function deletePlayer(req, res) {
   if (!id) return res.status(400).json({ error: 'Player ID required' });
 
   try {
+    const [rows] = await pool.query(`SELECT contribution FROM dru_players WHERE id = ?`, [id]);
+
+    if (rows.length > 0) {
+      const contribution = rows[0].contribution || '';
+
+      const imageIds = Array.from(contribution.matchAll(/\/api\/common\/images\/(\d+)/g)).map((m) => parseInt(m[1], 10));
+
+      for (const imgId of imageIds) {
+        await pool.query(`DELETE FROM images WHERE id = ?`, [imgId]);
+      }
+    }
+
     await pool.query(`DELETE FROM dru_players WHERE id = ?`, [id]);
+
     res.json({ message: 'Player deleted' });
   } catch (err) {
     console.error('Error deleting player:', err);
@@ -159,7 +170,7 @@ export async function deletePlayer(req, res) {
 
 export async function patchPlayerById(req, res) {
   const { id } = req.params;
-  const { name, mmr, country, races, socialLinks } = req.body;
+  const { name, mmr, country, role, contribution, races, socialLinks } = req.body;
 
   if (!id) return res.status(400).json({ error: 'Player ID required' });
 
@@ -167,16 +178,21 @@ export async function patchPlayerById(req, res) {
   try {
     await connection.beginTransaction();
 
+    const [oldRows] = await connection.query(`SELECT contribution FROM dru_players WHERE id = ?`, [id]);
+    const oldContribution = oldRows[0]?.contribution || '';
+
     await connection.query(
       `
       UPDATE dru_players
       SET 
         name = COALESCE(?, name),
         mmr = COALESCE(?, mmr),
-        country = COALESCE(?, country)
+        country = COALESCE(?, country),
+        role = COALESCE(?, role),
+        contribution = COALESCE(?, contribution)
       WHERE id = ?;
     `,
-      [name, mmr, country, id]
+      [name, mmr, country, role, contribution, id]
     );
 
     if (Array.isArray(races)) {
@@ -211,6 +227,20 @@ export async function patchPlayerById(req, res) {
     }
 
     await connection.commit();
+
+    try {
+      const newImageIds = Array.from((contribution || '').matchAll(/\/api\/common\/images\/(\d+)/g)).map((m) => parseInt(m[1], 10));
+
+      const oldImageIds = Array.from(oldContribution.matchAll(/\/api\/common\/images\/(\d+)/g)).map((m) => parseInt(m[1], 10));
+
+      const removedImageIds = oldImageIds.filter((oldId) => !newImageIds.includes(oldId));
+
+      for (const imgId of removedImageIds) {
+        await pool.query(`DELETE FROM images WHERE id = ?`, [imgId]);
+      }
+    } catch (cleanupErr) {
+      console.error('Error cleaning embedded images:', cleanupErr);
+    }
 
     res.json({ message: 'Player updated' });
   } catch (err) {

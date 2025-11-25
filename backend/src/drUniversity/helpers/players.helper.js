@@ -30,6 +30,8 @@ export function buildPlayerCard(player, raceMap, socials) {
     name: player.name,
     mmr: player.mmr,
     country: player.country,
+    role: player.role,
+    contribution: player.contribution,
     race: raceMap,
     links: socials,
   };

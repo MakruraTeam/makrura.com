@@ -8,13 +8,17 @@ export interface Player {
     id: number;
     link: string;
   }[];
+  role?: string;
+  contribution?: string;
 }
 
 export interface PlayerResponse {
   id: number;
   name: string;
-  mmr: number | null;
-  country: string | null;
+  mmr?: number;
+  country?: string;
+  role?: string;
+  contribution?: string;
 
   race: {
     nightelf: boolean;

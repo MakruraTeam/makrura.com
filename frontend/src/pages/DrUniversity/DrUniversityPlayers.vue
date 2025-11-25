@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, computed } from 'vue';
+import DOMPurify from 'dompurify';
 
 import { getAllPlayers } from '@/services/drUniversity/players/players.service';
 import type { PlayerResponse } from '@/services/drUniversity/players/players.model';
@@ -21,6 +22,16 @@ import nightelfIcon from '@/assets/imgs/nightelf.webp';
 
 const players = ref<PlayerResponse[]>([]);
 const loading = ref(true);
+
+const showContribution = ref(false);
+const contributionHtml = ref('');
+const contributionName = ref('');
+
+function openContribution(player: PlayerResponse) {
+  contributionHtml.value = DOMPurify.sanitize(player.contribution || '');
+  contributionName.value = player.name;
+  showContribution.value = true;
+}
 
 onMounted(async () => {
   try {
@@ -78,7 +89,6 @@ const socialIcons: Record<string, string> = {
   w3champions: w3championsIcon,
 };
 </script>
-
 <template>
   <v-progress-circular v-if="loading" indeterminate color="primary" class="d-flex mx-auto my-6" />
 
@@ -87,14 +97,16 @@ const socialIcons: Record<string, string> = {
       <tr>
         <th class="text-center" style="width: 5%">#</th>
 
-        <th class="text-left cursor-pointer" style="width: 35%" @click="sortBy('name')">
+        <th class="text-left cursor-pointer" style="width: 25%" @click="sortBy('name')">
           Name
           <v-icon size="16" v-if="sortKey === 'name'">
             {{ sortDirection === 'asc' ? 'mdi-chevron-up' : 'mdi-chevron-down' }}
           </v-icon>
         </th>
 
-        <th class="text-center" style="width: 20%">Race</th>
+        <th class="text-left" style="width: 15%">Role</th>
+
+        <th class="text-center" style="width: 15%">Race</th>
 
         <th class="text-center cursor-pointer" style="width: 10%" @click="sortBy('mmr')">
           MMR
@@ -110,6 +122,8 @@ const socialIcons: Record<string, string> = {
           </v-icon>
         </th>
 
+        <th class="text-center" style="width: 10%">Contribution</th>
+
         <th class="text-center" style="width: 20%">Links</th>
       </tr>
     </thead>
@@ -120,6 +134,8 @@ const socialIcons: Record<string, string> = {
 
         <td>{{ player.name }}</td>
 
+        <td>{{ player.role || '-' }}</td>
+
         <td class="text-center d-flex justify-center align-center ga-2">
           <template v-for="(active, race) in player.race" :key="race">
             <img v-if="active" :src="raceIcons[race]" width="28" height="28" />
@@ -128,6 +144,12 @@ const socialIcons: Record<string, string> = {
 
         <td class="text-center">{{ player.mmr }}</td>
         <td class="text-center">{{ player.country }}</td>
+
+        <td class="text-center">
+          <v-btn icon variant="text" color="primary" @click="openContribution(player)">
+            <v-icon>mdi-book-open-page-variant</v-icon>
+          </v-btn>
+        </td>
 
         <td class="text-center d-flex justify-center align-center ga-2">
           <template v-for="(item, idx) in player.links" :key="idx">
@@ -139,10 +161,31 @@ const socialIcons: Record<string, string> = {
       </tr>
     </tbody>
   </v-table>
+
+  <v-dialog v-model="showContribution" max-width="650">
+    <v-card>
+      <v-card-title class="text-center">{{ contributionName }} — Contribution</v-card-title>
+
+      <v-card-text>
+        <div v-html="contributionHtml"></div>
+      </v-card-text>
+
+      <v-card-actions class="justify-end">
+        <v-btn variant="text" @click="showContribution = false">Close</v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </template>
 
 <style scoped>
 .cursor-pointer {
   cursor: pointer;
+}
+
+:deep(.v-card-text img) {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 0.5rem 0;
 }
 </style>
