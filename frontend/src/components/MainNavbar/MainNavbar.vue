@@ -4,6 +4,7 @@ import MakruraLogo from '@/assets/imgs/makrura.png';
 import GamesLogo from '@/assets/imgs/games.png';
 import PalaRiffleLogo from '@/assets/imgs/paladin.png';
 import NewsLogo from '@/assets/imgs/news.webp';
+import Planet from '@/assets/imgs/planet.png';
 import { MainDrawerNavigationLink } from './MainNavbar.model';
 import { computed, Ref, ref, watch } from 'vue';
 import { useDisplay } from 'vuetify';
@@ -51,6 +52,12 @@ const navLinks: Ref<MainDrawerNavigationLink[]> = computed(() => [
     customIcon: GamesLogo,
     alt: 'Games Logo',
     location: 'top',
+  },
+  {
+    title: 'GeoGuesser',
+    to: '/geoguesser',
+    location: 'top',
+    customIcon: Planet,
   },
   {
     title: 'CMS Dashboard',

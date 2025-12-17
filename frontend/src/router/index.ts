@@ -91,6 +91,11 @@ const routes: Array<RouteRecordRaw> = [
     ],
   },
   {
+    path: '/geoguesser',
+    name: 'geoguesser',
+    component: PageInDevelopment,
+  },
+  {
     path: '/login',
     name: 'login',
     component: CmsLogin,
