@@ -10,7 +10,7 @@ export async function getAllMatchupTables() {
 }
 
 export async function getMatchupTableById(id: number) {
-  return defaultGet<MatchupTableFull>(`/dr-university/matchups/id/${id}`, false);
+  return defaultGet<MatchupTableFull>(`/dr-university/matchups/${id}`, false);
 }
 
 export async function deleteMatchupTableById(id: number) {

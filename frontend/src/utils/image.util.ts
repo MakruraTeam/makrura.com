@@ -14,8 +14,8 @@ export async function compressImage(file: File, maxWidth = 1000, quality = 0.8):
       canvas.width = width;
       canvas.height = height;
 
-      const ctx = canvas.getContext('2d')!;
-      ctx.drawImage(img, 0, 0, width, height);
+      const ctx = canvas.getContext('2d');
+      ctx?.drawImage(img, 0, 0, width, height);
 
       canvas.toBlob(
         (blob) => {

@@ -27,6 +27,10 @@ import AddGeoGuesser from '@/pages/Cms/GeoGuesser/AddGeoGuesser.vue';
 import EditGeoGuesser from '@/pages/Cms/GeoGuesser/EditGeoGuesser.vue';
 import ManageGeoGuesser from '@/pages/Cms/GeoGuesser/ManageGeoGuesser.vue';
 import GeoGuesserGuess from '@/pages/GeoGuesser/GeoGuesserGuess.vue';
+import DrUniversityPlayers from '@/pages/DrUniversity/DrUniversityPlayers.vue';
+import AddPlayer from '@/pages/Cms/DrUniversity/AddPlayer.vue';
+import ManagePlayers from '@/pages/Cms/DrUniversity/ManagePlayers.vue';
+import EditPlayer from '@/pages/Cms/DrUniversity/EditPlayer.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -66,7 +70,7 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: 'players',
         name: 'dr-university-players',
-        component: PageInDevelopment,
+        component: DrUniversityPlayers,
       },
       {
         path: ':pathMatch(.*)*',
@@ -189,6 +193,21 @@ const routes: Array<RouteRecordRaw> = [
         path: 'manage-geogussers',
         name: 'cms-manage-geogusser',
         component: ManageGeoGuesser,
+      },
+      {
+        path: 'add-player',
+        name: 'cms-add-player',
+        component: AddPlayer,
+      },
+      {
+        path: 'manage-players',
+        name: 'cms-manage-players',
+        component: ManagePlayers,
+      },
+      {
+        path: 'edit-player/:id',
+        name: 'cms-edit-player',
+        component: EditPlayer,
       },
     ],
   },

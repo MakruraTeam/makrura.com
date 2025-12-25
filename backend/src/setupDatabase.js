@@ -22,6 +22,10 @@ export async function setupDatabase() {
   await createMatchupCellsTable();
   await createMatchupCellLinksTable();
 
+  await createDruPlayersTable();
+  await createDruPlayersWC3RacesTable();
+  await createDruPlayersSocialLinksTable();
+
   //NEWS
   await createArticleTypesTable();
   await createArticlesTable();
@@ -250,14 +254,74 @@ async function createMatchupCellLinksTable() {
   `);
 }
 
+async function createDruPlayersTable() {
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS dru_players (
+      id INT AUTO_INCREMENT,
+      name VARCHAR(120) NOT NULL,
+      mmr INT,
+      country VARCHAR(120),
+      role VARCHAR(255),
+      contribution TEXT,
+
+      createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+      CONSTRAINT PK_dru_players PRIMARY KEY (id)
+    );
+  `);
+}
+
+async function createDruPlayersWC3RacesTable() {
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS dru_players_wc3_races (
+      id INT AUTO_INCREMENT,
+      playerId INT NOT NULL,
+      raceId INT NOT NULL,
+
+      createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+      CONSTRAINT PK_dru_players_wc3_races PRIMARY KEY (id),
+
+      CONSTRAINT FK_dru_players_wc3_races_player
+        FOREIGN KEY (playerId) REFERENCES dru_players(id)
+        ON DELETE CASCADE,
+
+      CONSTRAINT FK_dru_players_wc3_races_race
+        FOREIGN KEY (raceId) REFERENCES wc3_races(id)
+        ON DELETE CASCADE
+    );
+  `);
+}
+
+async function createDruPlayersSocialLinksTable() {
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS dru_players_social_links (
+      id INT AUTO_INCREMENT,
+      playerId INT NOT NULL,
+      platformId INT NOT NULL,
+      url VARCHAR(255) NOT NULL,
+
+      createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+      CONSTRAINT PK_dru_players_social_links PRIMARY KEY (id),
+
+      CONSTRAINT FK_dru_players_social_links_player
+        FOREIGN KEY (playerId) REFERENCES dru_players(id)
+        ON DELETE CASCADE,
+
+      CONSTRAINT FK_dru_players_social_links_platform
+        FOREIGN KEY (platformId) REFERENCES social_platforms(id)
+        ON DELETE CASCADE
+    );
+  `);
+}
+
 async function createWarcraft3MapsTable() {
   await pool.query(`
     CREATE TABLE IF NOT EXISTS wc3_maps (
       id INT AUTO_INCREMENT,
       name VARCHAR(255) NOT NULL UNIQUE,
-
       createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-
       CONSTRAINT PK_wc3_maps PRIMARY KEY (id)
     );
   `);
@@ -271,7 +335,6 @@ async function createGeoGuesserTable() {
       smallImageId INT NOT NULL,
       mediumImageId INT NOT NULL,
       largeImageId INT NOT NULL,
-
       createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       CONSTRAINT PK_geo_guesser PRIMARY KEY (id),
       CONSTRAINT FK_geo_guesser_map FOREIGN KEY (mapId) REFERENCES wc3_maps(id) ON DELETE CASCADE,
