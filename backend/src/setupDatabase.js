@@ -8,6 +8,7 @@ export async function setupDatabase() {
 
   //WC3 DB
   await createWarcraft3RacesTable();
+  await createWarcraft3MapsTable();
 
   //USERS
   await createUserTable();
@@ -26,11 +27,15 @@ export async function setupDatabase() {
   await createArticlesTable();
   await createArticleSocialLinksTable();
 
+  //GEO GUESSER
+  await createGeoGuesserTable();
+
   //SEEDS
   await seedSocialPlatforms();
   await seedWarcraft3Races();
   await seedArticleTypes();
   await createDefaultUser();
+  await seedWarcraft3Maps();
 }
 
 async function createImagesTable() {
@@ -245,6 +250,38 @@ async function createMatchupCellLinksTable() {
   `);
 }
 
+async function createWarcraft3MapsTable() {
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS wc3_maps (
+      id INT AUTO_INCREMENT,
+      name VARCHAR(255) NOT NULL UNIQUE,
+
+      createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+      CONSTRAINT PK_wc3_maps PRIMARY KEY (id)
+    );
+  `);
+}
+
+async function createGeoGuesserTable() {
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS geo_guesser (
+      id INT AUTO_INCREMENT,
+      mapId INT NOT NULL,
+      smallImageId INT NOT NULL,
+      mediumImageId INT NOT NULL,
+      largeImageId INT NOT NULL,
+
+      createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      CONSTRAINT PK_geo_guesser PRIMARY KEY (id),
+      CONSTRAINT FK_geo_guesser_map FOREIGN KEY (mapId) REFERENCES wc3_maps(id) ON DELETE CASCADE,
+      CONSTRAINT FK_geo_guesser_small_image FOREIGN KEY (smallImageId) REFERENCES images(id) ON DELETE CASCADE,
+      CONSTRAINT FK_geo_guesser_medium_image FOREIGN KEY (mediumImageId) REFERENCES images(id) ON DELETE CASCADE,
+      CONSTRAINT FK_geo_guesser_large_image FOREIGN KEY (largeImageId) REFERENCES images(id) ON DELETE CASCADE
+    );
+  `);
+}
+
 async function seedSocialPlatforms() {
   const platforms = ['tiktok', 'youtube', 'liquipedia', 'soop', 'twitch', 'instagram', 'twitter', 'reddit', 'w3champions'];
   const values = platforms.map(() => '(?)').join(', ');
@@ -264,6 +301,35 @@ async function seedArticleTypes() {
   const values = types.map(() => '(?)').join(', ');
   const sql = `INSERT IGNORE INTO article_types (name) VALUES ${values};`;
   await pool.query(sql, types);
+}
+
+async function seedWarcraft3Maps() {
+  const maps = [
+    'Autumn Leaves v2',
+    'Concealed Hill',
+    'Last Refuge',
+    'Northern Isles',
+    'Melting Valley v2',
+    'Shallow Grave',
+    'Tidehunters',
+    'Springtime',
+    'Hammerfall',
+    'War Hail',
+    'Boulder Vale',
+    'Terenas Stand v2',
+    'Scrimmage',
+    'Twisted Meadows',
+    'Turtle Rock v2',
+    'Echo Isles v2',
+    'Amazonia',
+    'Secret Valley v2',
+    'Shattered Exile v2',
+    'Lost Temple',
+  ];
+
+  const values = maps.map(() => '(?)').join(', ');
+  const sql = `INSERT IGNORE INTO wc3_maps (name) VALUES ${values};`;
+  await pool.query(sql, maps);
 }
 
 async function createDefaultUser() {

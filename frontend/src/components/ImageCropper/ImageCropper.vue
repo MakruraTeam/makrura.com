@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { ref, watch, defineEmits, defineProps } from 'vue';
+import { ref, watch } from 'vue';
 import { Cropper } from 'vue-advanced-cropper';
 import 'vue-advanced-cropper/dist/style.css';
 
 const props = defineProps<{
   modelValue: string | null;
   label?: string;
-  aspectRatio?: number; // 👈 add this (default will be 1 for square)
+  aspectRatio?: number;
 }>();
 
 const emit = defineEmits(['update:modelValue', 'change']);

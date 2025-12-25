@@ -22,6 +22,11 @@ import AddMatchupTable from '@/pages/Cms/DrUniversity/AddMatchupTable.vue';
 import DrUniversityMatchups from '@/pages/DrUniversity/DrUniversityMatchups.vue';
 import ManageMatchups from '@/pages/Cms/DrUniversity/ManageMatchups.vue';
 import EditMatchupTable from '@/pages/Cms/DrUniversity/EditMatchupTable.vue';
+import GeoGuesser from '@/pages/GeoGuesser/GeoGuesser.vue';
+import AddGeoGuesser from '@/pages/Cms/GeoGuesser/AddGeoGuesser.vue';
+import EditGeoGuesser from '@/pages/Cms/GeoGuesser/EditGeoGuesser.vue';
+import ManageGeoGuesser from '@/pages/Cms/GeoGuesser/ManageGeoGuesser.vue';
+import GeoGuesserGuess from '@/pages/GeoGuesser/GeoGuesserGuess.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -93,7 +98,12 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/geoguesser',
     name: 'geoguesser',
-    component: PageInDevelopment,
+    component: GeoGuesser,
+  },
+  {
+    path: '/geoguesser/:id',
+    name: 'geoguesser-guess',
+    component: GeoGuesserGuess,
   },
   {
     path: '/login',
@@ -164,6 +174,21 @@ const routes: Array<RouteRecordRaw> = [
         path: 'edit-matchup-table/:id',
         name: 'cms-edit-matchup-table',
         component: EditMatchupTable,
+      },
+      {
+        path: 'add-geoguesser',
+        name: 'cms-add-geoguesser',
+        component: AddGeoGuesser,
+      },
+      {
+        path: 'edit-geoguesser/:id',
+        name: 'cms-edit-geoguesser',
+        component: EditGeoGuesser,
+      },
+      {
+        path: 'manage-geogussers',
+        name: 'cms-manage-geogusser',
+        component: ManageGeoGuesser,
       },
     ],
   },
