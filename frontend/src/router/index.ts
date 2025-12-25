@@ -7,7 +7,7 @@ import GamesLayout from '@/layouts/GamesLayout.vue';
 import CmsLogin from '@/pages/Cms/CmsLogin.vue';
 import CmsDashboard from '@/pages/Cms/CmsDashboard.vue';
 import { useAuthStore } from '@/stores/auth';
-import AddUser from '@/pages/Cms/Users/AddUser.vue';
+import AddUser from '@/pages/Cms/users/AddUser.vue';
 import AddFounder from '@/pages/Cms/DrUniversity/AddFounder.vue';
 import ManageFounders from '@/pages/Cms/DrUniversity/ManageFounders.vue';
 import PalaRiffleUniversity from '@/pages/PrUniversity/PalaRiffleUniversity.vue';
@@ -22,6 +22,10 @@ import AddMatchupTable from '@/pages/Cms/DrUniversity/AddMatchupTable.vue';
 import DrUniversityMatchups from '@/pages/DrUniversity/DrUniversityMatchups.vue';
 import ManageMatchups from '@/pages/Cms/DrUniversity/ManageMatchups.vue';
 import EditMatchupTable from '@/pages/Cms/DrUniversity/EditMatchupTable.vue';
+import DrUniversityPlayers from '@/pages/DrUniversity/DrUniversityPlayers.vue';
+import AddPlayer from '@/pages/Cms/DrUniversity/AddPlayer.vue';
+import ManagePlayers from '@/pages/Cms/DrUniversity/ManagePlayers.vue';
+import EditPlayer from '@/pages/Cms/DrUniversity/EditPlayer.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -61,7 +65,7 @@ const routes: Array<RouteRecordRaw> = [
       {
         path: 'players',
         name: 'dr-university-players',
-        component: PageInDevelopment,
+        component: DrUniversityPlayers,
       },
       {
         path: ':pathMatch(.*)*',
@@ -159,6 +163,21 @@ const routes: Array<RouteRecordRaw> = [
         path: 'edit-matchup-table/:id',
         name: 'cms-edit-matchup-table',
         component: EditMatchupTable,
+      },
+      {
+        path: 'add-player',
+        name: 'cms-add-player',
+        component: AddPlayer,
+      },
+      {
+        path: 'manage-players',
+        name: 'cms-manage-players',
+        component: ManagePlayers,
+      },
+      {
+        path: 'edit-player/:id',
+        name: 'cms-edit-player',
+        component: EditPlayer,
       },
     ],
   },
