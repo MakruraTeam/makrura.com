@@ -26,6 +26,8 @@ import DrUniversityPlayers from '@/pages/DrUniversity/DrUniversityPlayers.vue';
 import AddPlayer from '@/pages/Cms/DrUniversity/AddPlayer.vue';
 import ManagePlayers from '@/pages/Cms/DrUniversity/ManagePlayers.vue';
 import EditPlayer from '@/pages/Cms/DrUniversity/EditPlayer.vue';
+import LanEventsPage from '@/pages/LanEvents/LanEventsPage.vue';
+import LanEventDetail from '@/pages/LanEvents/LanEventDetail.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -93,6 +95,16 @@ const routes: Array<RouteRecordRaw> = [
         component: AttackArmorValueGame,
       },
     ],
+  },
+  {
+    path: '/lan-events',
+    name: 'lan-events',
+    component: LanEventsPage,
+  },
+  {
+    path: '/lan-events/:slug',
+    name: 'lan-event-detail',
+    component: LanEventDetail,
   },
   {
     path: '/login',

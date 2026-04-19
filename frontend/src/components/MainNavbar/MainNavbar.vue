@@ -53,6 +53,13 @@ const navLinks: Ref<MainDrawerNavigationLink[]> = computed(() => [
     location: 'top',
   },
   {
+    title: 'LAN Events',
+    to: '/lan-events',
+    customIcon: MakruraLogo,
+    alt: 'LAN Events Logo',
+    location: 'top',
+  },
+  {
     title: 'CMS Dashboard',
     to: '/cms',
     icon: 'mdi-view-dashboard',
